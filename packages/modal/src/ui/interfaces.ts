@@ -130,7 +130,6 @@ export interface ModalState {
   // UI State - changes frequently during user interaction
   status: ModalStatusType;
   modalVisibility: boolean;
-  modalVisibilityDelayed: boolean;
   externalWalletsVisibility: boolean;
   currentPage?: string;
 

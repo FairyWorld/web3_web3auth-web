@@ -34,7 +34,6 @@ const initialModalState: ModalState = {
   // UI State
   status: MODAL_STATUS.INITIALIZED,
   modalVisibility: false,
-  modalVisibilityDelayed: false,
   externalWalletsVisibility: false,
   currentPage: PAGES.LOGIN,
 
