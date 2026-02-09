@@ -6,7 +6,6 @@ export interface ConnectWalletProps {
   allRegistryButtons: ExternalButton[];
   customConnectorButtons: ExternalButton[];
   connectorVisibilityMap: Record<string, boolean>;
-  onBackClick?: (flag: boolean) => void;
   handleExternalWalletClick: (params: { connector: string; chainNamespace?: ChainNamespaceType }) => void;
   handleWalletDetailsHeight: () => void;
   disableBackButton?: boolean;

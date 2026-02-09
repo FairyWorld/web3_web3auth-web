@@ -26,6 +26,7 @@ type ModalStateContextType = {
   modalState: ModalState;
   setModalState: Dispatch<SetStateAction<ModalState>>;
   preHandleExternalWalletClick: (params: ExternalWalletEventType) => void;
+  handleShowExternalWallets: (flag: boolean) => void;
   areSocialLoginsVisible: boolean;
   isEmailPrimary: boolean;
   isExternalPrimary: boolean;
@@ -41,6 +42,7 @@ type ModalStateProviderProps = {
   stateListener: StateListener;
   initialVisibility?: boolean;
   onExternalWalletClick?: (params: ExternalWalletEventType) => void;
+  onShowExternalWallets?: (externalWalletsInitialized: boolean) => void;
 };
 
 const initialModalState: ModalState = {
@@ -74,7 +76,13 @@ const initialModalState: ModalState = {
 
 const ModalStateContext = createContext<ModalStateContextType | undefined>(undefined);
 
-export const ModalStateProvider: FC<ModalStateProviderProps> = ({ children, stateListener, initialVisibility = false, onExternalWalletClick }) => {
+export const ModalStateProvider: FC<ModalStateProviderProps> = ({
+  children,
+  stateListener,
+  initialVisibility = false,
+  onExternalWalletClick,
+  onShowExternalWallets,
+}) => {
   const [modalState, setModalState] = useState<ModalState>({
     ...initialModalState,
     modalVisibility: initialVisibility,
@@ -149,6 +157,17 @@ export const ModalStateProvider: FC<ModalStateProviderProps> = ({ children, stat
     [onExternalWalletClick]
   );
 
+  const handleShowExternalWallets = useCallback(
+    (flag: boolean) => {
+      setModalState((prevState) => ({
+        ...prevState,
+        externalWalletsVisibility: flag,
+      }));
+      if (flag && onShowExternalWallets) onShowExternalWallets(modalState.externalWalletsInitialized);
+    },
+    [onShowExternalWallets, modalState.externalWalletsInitialized]
+  );
+
   // TODO: check if can further refactor this logic
   const shouldShowLoginPage = useMemo(
     () =>
@@ -162,6 +181,7 @@ export const ModalStateProvider: FC<ModalStateProviderProps> = ({ children, stat
       modalState,
       setModalState,
       preHandleExternalWalletClick,
+      handleShowExternalWallets,
       areSocialLoginsVisible,
       isEmailPrimary,
       isExternalPrimary,
@@ -174,6 +194,7 @@ export const ModalStateProvider: FC<ModalStateProviderProps> = ({ children, stat
     [
       modalState,
       preHandleExternalWalletClick,
+      handleShowExternalWallets,
       isEmailPrimary,
       isExternalPrimary,
       areSocialLoginsVisible,

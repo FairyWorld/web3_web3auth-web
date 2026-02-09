@@ -11,8 +11,7 @@ import Root from "../Root";
 import { WidgetProps } from "./Widget.type";
 
 function WidgetContent() {
-  const { uiConfig, handleSocialLoginClick, handleExternalWalletClick, handleMobileVerifyConnect, handleShowExternalWallets, closeModal } =
-    useWidget();
+  const { uiConfig, handleSocialLoginClick, handleExternalWalletClick, handleMobileVerifyConnect, closeModal } = useWidget();
 
   const { modalState, setModalState } = useModalState();
 
@@ -29,16 +28,6 @@ function WidgetContent() {
       return { ...prevState, detailedLoaderConnector: loginParams.authConnection, detailedLoaderConnectorName: loginParams.name };
     });
     handleSocialLoginClick(params);
-  };
-
-  const handleExternalWalletBtnClick = (flag: boolean) => {
-    setModalState((prevState) => {
-      return {
-        ...prevState,
-        externalWalletsVisibility: flag,
-      };
-    });
-    if (flag && handleShowExternalWallets) handleShowExternalWallets(modalState.externalWalletsInitialized);
   };
 
   const onCloseModal = () => {
@@ -99,7 +88,6 @@ function WidgetContent() {
   const rootElement = (
     <Root
       handleSocialLoginClick={(params: SocialLoginEventType) => preHandleSocialWalletClick(params)}
-      handleExternalWalletBtnClick={handleExternalWalletBtnClick}
       onCloseLoader={onCloseLoader}
       isConnectAndSignAuthenticationMode={isConnectAndSignAuthenticationMode}
       handleMobileVerifyConnect={handleMobileVerifyConnect}
@@ -132,13 +120,18 @@ function WidgetContent() {
 
 function Widget(props: WidgetProps) {
   const { stateListener } = props;
-  const { uiConfig, handleExternalWalletClick } = useWidget();
+  const { uiConfig, handleExternalWalletClick, handleShowExternalWallets } = useWidget();
   const { widgetType } = uiConfig;
 
   const initialVisibility = useMemo(() => widgetType === WIDGET_TYPE.EMBED, [widgetType]);
 
   return (
-    <ModalStateProvider stateListener={stateListener} initialVisibility={initialVisibility} onExternalWalletClick={handleExternalWalletClick}>
+    <ModalStateProvider
+      stateListener={stateListener}
+      initialVisibility={initialVisibility}
+      onExternalWalletClick={handleExternalWalletClick}
+      onShowExternalWallets={handleShowExternalWallets}
+    >
       <WidgetContent />
     </ModalStateProvider>
   );

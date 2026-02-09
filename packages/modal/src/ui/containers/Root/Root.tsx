@@ -15,11 +15,9 @@ import { RootProps } from "./Root.type";
 import RootBodySheets from "./RootBodySheets/RootBodySheets";
 
 function RootContent(props: RootProps) {
-  const { handleExternalWalletBtnClick, handleMobileVerifyConnect, onCloseLoader, handleSocialLoginClick, isConnectAndSignAuthenticationMode } =
-    props;
+  const { handleMobileVerifyConnect, onCloseLoader, handleSocialLoginClick, isConnectAndSignAuthenticationMode } = props;
 
-  const { modalState, setModalState, preHandleExternalWalletClick, shouldShowLoginPage, showPasswordLessInput, areSocialLoginsVisible } =
-    useModalState();
+  const { modalState, preHandleExternalWalletClick, shouldShowLoginPage, showPasswordLessInput, areSocialLoginsVisible } = useModalState();
   const { appLogo, deviceDetails, uiConfig } = useWidget();
   const { chainNamespaces, walletRegistry, privacyPolicy, tncLink, displayInstalledExternalWallets, hideSuccessScreen } = uiConfig;
 
@@ -27,22 +25,6 @@ function RootContent(props: RootProps) {
 
   const [isSocialLoginsExpanded, setIsSocialLoginsExpanded] = useState(false);
   const [isWalletDetailsExpanded, setIsWalletDetailsExpanded] = useState(false);
-
-  const onExternalWalletBtnClick = (flag: boolean) => {
-    setModalState({
-      ...modalState,
-      currentPage: PAGES.CONNECT_WALLET,
-    });
-    if (handleExternalWalletBtnClick) handleExternalWalletBtnClick(flag);
-  };
-
-  const onBackClick = (flag: boolean) => {
-    setModalState({
-      ...modalState,
-      currentPage: PAGES.LOGIN,
-    });
-    if (handleExternalWalletBtnClick) handleExternalWalletBtnClick(flag);
-  };
 
   // External Wallets
   const config = useMemo(() => modalState.externalWalletsConfig, [modalState.externalWalletsConfig]);
@@ -278,7 +260,6 @@ function RootContent(props: RootProps) {
                   totalExternalWallets={allExternalWallets.length}
                   remainingUndisplayedWallets={remainingUndisplayedWallets}
                   handleSocialLoginClick={handleSocialLoginClick}
-                  handleExternalWalletBtnClick={onExternalWalletBtnClick}
                   handleSocialLoginHeight={handleSocialLoginHeight}
                   handleExternalWalletClick={preHandleExternalWalletClick}
                 />
@@ -293,7 +274,6 @@ function RootContent(props: RootProps) {
                     customConnectorButtons={customConnectorButtons}
                     handleWalletDetailsHeight={handleWalletDetailsHeight}
                     isExternalWalletModeOnly={isExternalWalletModeOnly}
-                    onBackClick={onBackClick}
                     handleExternalWalletClick={preHandleExternalWalletClick}
                     disableBackButton={bodyState.installLinks?.show || bodyState.multiChainSelector?.show}
                   />

@@ -14,7 +14,7 @@ import { useTranslation } from "react-i18next";
 import Image from "../../components/Image";
 import SocialLoginList from "../../components/SocialLoginList/SocialLoginList";
 import { capitalizeFirstLetter, CAPTCHA_SITE_KEY } from "../../config";
-import { DEFAULT_LOGO_DARK, DEFAULT_LOGO_LIGHT } from "../../constants";
+import { DEFAULT_LOGO_DARK, DEFAULT_LOGO_LIGHT, PAGES } from "../../constants";
 import { AnalyticsContext } from "../../context/AnalyticsContext";
 import { useModalState } from "../../context/ModalStateContext";
 import { useBodyState } from "../../context/RootContext";
@@ -45,7 +45,6 @@ function Login(props: LoginProps) {
     handleSocialLoginClick,
     totalExternalWallets,
     remainingUndisplayedWallets,
-    handleExternalWalletBtnClick,
     handleExternalWalletClick,
   } = props;
 
@@ -56,11 +55,13 @@ function Login(props: LoginProps) {
   // TODO: add appName, isEmailPrimary, isExternalPrimary
   const {
     modalState,
+    setModalState,
     areSocialLoginsVisible,
     isEmailPasswordLessLoginVisible,
     isSmsPasswordLessLoginVisible,
     showPasswordLessInput,
     showExternalWalletButton,
+    handleShowExternalWallets,
   } = useModalState();
   const { modalVisibility: isModalVisible, socialLoginsConfig } = modalState;
   const {
@@ -336,6 +337,18 @@ function Login(props: LoginProps) {
     }
   };
 
+  const handleExternalWalletBtnClick = useCallback(
+    (flag: boolean) => {
+      setModalState({
+        ...modalState,
+        currentPage: PAGES.CONNECT_WALLET,
+      });
+
+      handleShowExternalWallets(flag);
+    },
+    [modalState, setModalState, handleShowExternalWallets]
+  );
+
   /**
    * Installed wallet click logic:
    * - For MetaMask: If not injected and on desktop, display QR code for connection.
@@ -364,7 +377,9 @@ function Login(props: LoginProps) {
         ...bodyState,
         preSelectedWallet: wallet,
       });
-      if (handleExternalWalletBtnClick) handleExternalWalletBtnClick(true);
+
+      handleExternalWalletBtnClick(true);
+
       return;
     }
 
@@ -396,7 +411,7 @@ function Login(props: LoginProps) {
       });
       setIsPasswordLessCtaClicked(false);
       e?.preventDefault();
-      if (handleExternalWalletBtnClick) handleExternalWalletBtnClick(true);
+      handleExternalWalletBtnClick(true);
     },
     [analytics, handleExternalWalletBtnClick, installedExternalWallets.length, totalExternalWallets]
   );

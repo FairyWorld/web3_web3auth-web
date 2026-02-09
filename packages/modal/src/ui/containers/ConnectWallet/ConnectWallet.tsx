@@ -1,7 +1,7 @@
 import { ANALYTICS_EVENTS, type ChainNamespaceType, log, type WALLET_CONNECTOR_TYPE, WALLET_CONNECTORS } from "@web3auth/no-modal";
-import { FormEvent, useContext, useEffect, useMemo, useState } from "react";
+import { FormEvent, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
-import { CONNECT_WALLET_PAGES } from "../../constants";
+import { CONNECT_WALLET_PAGES, PAGES } from "../../constants";
 import { AnalyticsContext } from "../../context/AnalyticsContext";
 import { useModalState } from "../../context/ModalStateContext";
 import { useBodyState } from "../../context/RootContext";
@@ -19,7 +19,6 @@ function ConnectWallet(props: ConnectWalletProps) {
     allRegistryButtons,
     customConnectorButtons,
     connectorVisibilityMap,
-    onBackClick,
     handleExternalWalletClick,
     handleWalletDetailsHeight,
     disableBackButton,
@@ -30,7 +29,7 @@ function ConnectWallet(props: ConnectWalletProps) {
   const { analytics } = useContext(AnalyticsContext);
   const { deviceDetails, isDark, uiConfig } = useWidget();
   const { walletRegistry } = uiConfig;
-  const { modalState } = useModalState();
+  const { modalState, setModalState, handleShowExternalWallets } = useModalState();
   const { externalWalletsConfig: config, walletConnectUri, metamaskConnectUri } = modalState;
 
   const [currentPage, setCurrentPage] = useState(CONNECT_WALLET_PAGES.CONNECT_WALLET);
@@ -42,6 +41,17 @@ function ConnectWallet(props: ConnectWalletProps) {
   const [isShowAllWallets, setIsShowAllWallets] = useState<boolean>(false);
   // Track if user came directly from Login page with a pre-selected wallet
   const [isPreSelectedFromLogin, setIsPreSelectedFromLogin] = useState(false);
+
+  const onBackClick = useCallback(
+    (flag: boolean) => {
+      setModalState({
+        ...modalState,
+        currentPage: PAGES.LOGIN,
+      });
+      handleShowExternalWallets(flag);
+    },
+    [modalState, setModalState, handleShowExternalWallets]
+  );
 
   const handleBack = () => {
     if (!selectedWallet && currentPage === CONNECT_WALLET_PAGES.CONNECT_WALLET && onBackClick) {
