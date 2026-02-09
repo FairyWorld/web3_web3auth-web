@@ -17,7 +17,7 @@ import { capitalizeFirstLetter, CAPTCHA_SITE_KEY } from "../../config";
 import { DEFAULT_LOGO_DARK, DEFAULT_LOGO_LIGHT } from "../../constants";
 import { AnalyticsContext } from "../../context/AnalyticsContext";
 import { useModalState } from "../../context/ModalStateContext";
-import { RootContext } from "../../context/RootContext";
+import { useBodyState } from "../../context/RootContext";
 import { useWidget } from "../../context/WidgetContext";
 import type { PasswordlessHandler } from "../../handlers/AbstractHandler";
 import { createPasswordlessHandler } from "../../handlers/factory";
@@ -50,7 +50,7 @@ function Login(props: LoginProps) {
   } = props;
 
   const [t] = useTranslation(undefined, { i18n });
-  const { bodyState, setBodyState } = useContext(RootContext);
+  const { bodyState, setBodyState } = useBodyState();
   const { analytics } = useContext(AnalyticsContext);
   const { appLogo, deviceDetails, uiConfig, isDark } = useWidget();
   // TODO: add appName, isEmailPrimary, isExternalPrimary

@@ -4,7 +4,7 @@ import { FormEvent, useContext, useEffect, useMemo, useState } from "react";
 import { CONNECT_WALLET_PAGES } from "../../constants";
 import { AnalyticsContext } from "../../context/AnalyticsContext";
 import { useModalState } from "../../context/ModalStateContext";
-import { RootContext } from "../../context/RootContext";
+import { useBodyState } from "../../context/RootContext";
 import { useWidget } from "../../context/WidgetContext";
 import { ExternalButton } from "../../interfaces";
 import { ConnectWalletProps } from "./ConnectWallet.type";
@@ -26,7 +26,7 @@ function ConnectWallet(props: ConnectWalletProps) {
     isExternalWalletModeOnly,
   } = props;
 
-  const { bodyState, setBodyState } = useContext(RootContext);
+  const { bodyState, setBodyState } = useBodyState();
   const { analytics } = useContext(AnalyticsContext);
   const { deviceDetails, isDark, uiConfig } = useWidget();
   const { walletRegistry } = uiConfig;

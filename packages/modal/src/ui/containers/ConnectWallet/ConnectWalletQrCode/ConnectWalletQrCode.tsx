@@ -1,18 +1,19 @@
 import Bowser from "bowser";
-import { useContext, useMemo } from "react";
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { QRCode } from "react-qrcode-logo";
 
 import Image from "../../../components/Image";
 import { WALLET_CONNECT_LOGO } from "../../../constants";
-import { RootContext } from "../../../context/RootContext";
+import { useBodyState, useToast } from "../../../context/RootContext";
 import { TOAST_TYPE } from "../../../interfaces";
 import i18n from "../../../localeImport";
 import { ConnectWalletQrCodeProps } from "./ConnectWalletQrCode.type";
 
 function ConnectWalletQrCode(props: ConnectWalletQrCodeProps) {
   const [t] = useTranslation(undefined, { i18n });
-  const { bodyState, setBodyState, setToast } = useContext(RootContext);
+  const { bodyState, setBodyState } = useBodyState();
+  const { setToast } = useToast();
   const { qrCodeValue, isDark, selectedButton, logoImage, primaryColor, platform } = props;
 
   const showGetWalletComponent = useMemo(() => {

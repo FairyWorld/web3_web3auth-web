@@ -9,9 +9,9 @@ import Loader from "../../components/Loader";
 import Toast from "../../components/Toast";
 import { DEFAULT_METAMASK_WALLET_REGISTRY_ITEM, PAGES } from "../../constants";
 import { useModalState } from "../../context/ModalStateContext";
-import { BodyState, RootContext } from "../../context/RootContext";
+import { RootProvider, useRoot } from "../../context/RootContext";
 import { useWidget } from "../../context/WidgetContext";
-import { ExternalButton, mobileOs, MODAL_STATUS, TOAST_TYPE, ToastType } from "../../interfaces";
+import { ExternalButton, mobileOs, MODAL_STATUS } from "../../interfaces";
 import i18n from "../../localeImport";
 import { cn, getBrowserExtensionUrl, getBrowserName, getIcons, getMobileInstallLink, getOsName } from "../../utils";
 import ConnectWallet from "../ConnectWallet";
@@ -19,7 +19,7 @@ import ConnectWalletChainNamespaceSelect from "../ConnectWallet/ConnectWalletCha
 import Login from "../Login";
 import { RootProps } from "./Root.type";
 
-function Root(props: RootProps) {
+function RootContent(props: RootProps) {
   const {
     handleExternalWalletBtnClick,
     handleMobileVerifyConnect,
@@ -34,26 +34,7 @@ function Root(props: RootProps) {
   const { buttonRadiusType, chainNamespaces, walletRegistry, privacyPolicy, tncLink, displayInstalledExternalWallets, hideSuccessScreen } = uiConfig;
 
   const [t] = useTranslation(undefined, { i18n });
-
-  const [bodyState, setBodyState] = useState<BodyState>({
-    installLinks: {
-      show: false,
-      wallet: null,
-    },
-    multiChainSelector: {
-      show: false,
-      wallet: null,
-    },
-    preSelectedWallet: null,
-  });
-
-  const [toast, setToast] = useState<{
-    message: string;
-    type: ToastType;
-  }>({
-    message: "",
-    type: TOAST_TYPE.SUCCESS,
-  });
+  const { bodyState, setBodyState } = useRoot();
 
   const [isSocialLoginsExpanded, setIsSocialLoginsExpanded] = useState(false);
   const [isWalletDetailsExpanded, setIsWalletDetailsExpanded] = useState(false);
@@ -383,130 +364,125 @@ function Root(props: RootProps) {
     topInstalledConnectorButtons.length,
   ]);
 
-  const contextValue = useMemo(
-    () => ({
-      bodyState,
-      setBodyState,
-      toast,
-      setToast,
-    }),
-    [bodyState, setBodyState, toast, setToast]
-  );
-
   const isShowLoader = useMemo(() => {
     return modalState.status !== MODAL_STATUS.INITIALIZED;
   }, [modalState.status]);
 
   return (
-    <RootContext.Provider value={contextValue}>
-      <div className="w3a--relative w3a--flex w3a--flex-col">
-        <div
-          className="w3a--relative w3a--h-screen w3a--overflow-hidden w3a--transition-all w3a--duration-[400ms] w3a--ease-in-out"
-          style={{
-            maxHeight: containerMaxHeight,
-          }}
-        >
-          <div className="w3a--modal-curtain" />
-          <div className="w3a--relative w3a--flex w3a--h-full w3a--flex-1 w3a--flex-col w3a--p-6">
-            {/* Content */}
-            {isShowLoader ? (
-              <Loader
-                connector={modalState.detailedLoaderConnector}
-                connectorName={modalState.detailedLoaderConnectorName}
-                modalStatus={modalState.status}
-                onClose={onCloseLoader}
-                appLogo={appLogo}
-                isConnectAndSignAuthenticationMode={isConnectAndSignAuthenticationMode}
-                externalWalletsConfig={modalState.externalWalletsConfig}
-                walletRegistry={walletRegistry}
-                handleMobileVerifyConnect={handleMobileVerifyConnect}
-                hideSuccessScreen={hideSuccessScreen}
-              />
-            ) : (
-              <>
-                {/* Login Screen */}
-                {modalState.currentPage === PAGES.LOGIN && shouldShowLoginPage && modalState.status === MODAL_STATUS.INITIALIZED && (
-                  <Login
-                    installedExternalWalletConfig={topInstalledConnectorButtons}
-                    totalExternalWallets={allExternalWallets.length}
-                    remainingUndisplayedWallets={remainingUndisplayedWallets}
-                    handleSocialLoginClick={handleSocialLoginClick}
-                    handleExternalWalletBtnClick={onExternalWalletBtnClick}
-                    handleSocialLoginHeight={handleSocialLoginHeight}
+    <div className="w3a--relative w3a--flex w3a--flex-col">
+      <div
+        className="w3a--relative w3a--h-screen w3a--overflow-hidden w3a--transition-all w3a--duration-[400ms] w3a--ease-in-out"
+        style={{
+          maxHeight: containerMaxHeight,
+        }}
+      >
+        <div className="w3a--modal-curtain" />
+        <div className="w3a--relative w3a--flex w3a--h-full w3a--flex-1 w3a--flex-col w3a--p-6">
+          {/* Content */}
+          {isShowLoader ? (
+            <Loader
+              connector={modalState.detailedLoaderConnector}
+              connectorName={modalState.detailedLoaderConnectorName}
+              modalStatus={modalState.status}
+              onClose={onCloseLoader}
+              appLogo={appLogo}
+              isConnectAndSignAuthenticationMode={isConnectAndSignAuthenticationMode}
+              externalWalletsConfig={modalState.externalWalletsConfig}
+              walletRegistry={walletRegistry}
+              handleMobileVerifyConnect={handleMobileVerifyConnect}
+              hideSuccessScreen={hideSuccessScreen}
+            />
+          ) : (
+            <>
+              {/* Login Screen */}
+              {modalState.currentPage === PAGES.LOGIN && shouldShowLoginPage && modalState.status === MODAL_STATUS.INITIALIZED && (
+                <Login
+                  installedExternalWalletConfig={topInstalledConnectorButtons}
+                  totalExternalWallets={allExternalWallets.length}
+                  remainingUndisplayedWallets={remainingUndisplayedWallets}
+                  handleSocialLoginClick={handleSocialLoginClick}
+                  handleExternalWalletBtnClick={onExternalWalletBtnClick}
+                  handleSocialLoginHeight={handleSocialLoginHeight}
+                  handleExternalWalletClick={preHandleExternalWalletClick}
+                />
+              )}
+              {/* Connect Wallet Screen */}
+              {modalState.currentPage === PAGES.CONNECT_WALLET &&
+                (!shouldShowLoginPage || isExternalWalletModeOnly) &&
+                modalState.status === MODAL_STATUS.INITIALIZED && (
+                  <ConnectWallet
+                    allRegistryButtons={allRegistryButtons}
+                    connectorVisibilityMap={connectorVisibilityMap}
+                    customConnectorButtons={customConnectorButtons}
+                    handleWalletDetailsHeight={handleWalletDetailsHeight}
+                    isExternalWalletModeOnly={isExternalWalletModeOnly}
+                    onBackClick={onBackClick}
                     handleExternalWalletClick={preHandleExternalWalletClick}
+                    disableBackButton={bodyState.installLinks?.show || bodyState.multiChainSelector?.show}
                   />
                 )}
-                {/* Connect Wallet Screen */}
-                {modalState.currentPage === PAGES.CONNECT_WALLET &&
-                  (!shouldShowLoginPage || isExternalWalletModeOnly) &&
-                  modalState.status === MODAL_STATUS.INITIALIZED && (
-                    <ConnectWallet
-                      allRegistryButtons={allRegistryButtons}
-                      connectorVisibilityMap={connectorVisibilityMap}
-                      customConnectorButtons={customConnectorButtons}
-                      handleWalletDetailsHeight={handleWalletDetailsHeight}
-                      isExternalWalletModeOnly={isExternalWalletModeOnly}
-                      onBackClick={onBackClick}
-                      handleExternalWalletClick={preHandleExternalWalletClick}
-                      disableBackButton={bodyState.installLinks?.show || bodyState.multiChainSelector?.show}
-                    />
-                  )}
-              </>
-            )}
+            </>
+          )}
 
-            {/* Footer */}
-            <Footer privacyPolicy={privacyPolicy} termsOfService={tncLink} />
+          {/* Footer */}
+          <Footer privacyPolicy={privacyPolicy} termsOfService={tncLink} />
 
-            {/* Multi Chain Selector */}
-            {bodyState.multiChainSelector?.show && (
-              <BottomSheet
-                borderRadiusType={uiConfig.borderRadiusType}
-                isShown={bodyState.multiChainSelector.show}
-                onClose={() => setBodyState({ ...bodyState, multiChainSelector: { show: false, wallet: null } })}
-              >
-                <ConnectWalletChainNamespaceSelect
-                  isDark={isDark}
-                  wallet={bodyState.multiChainSelector.wallet}
-                  handleExternalWalletClick={(params) => {
-                    preHandleExternalWalletClick(params);
-                    setBodyState({ ...bodyState, multiChainSelector: { show: false, wallet: null } });
-                  }}
+          {/* Multi Chain Selector */}
+          {bodyState.multiChainSelector?.show && (
+            <BottomSheet
+              borderRadiusType={uiConfig.borderRadiusType}
+              isShown={bodyState.multiChainSelector.show}
+              onClose={() => setBodyState({ ...bodyState, multiChainSelector: { show: false, wallet: null } })}
+            >
+              <ConnectWalletChainNamespaceSelect
+                isDark={isDark}
+                wallet={bodyState.multiChainSelector.wallet}
+                handleExternalWalletClick={(params) => {
+                  preHandleExternalWalletClick(params);
+                  setBodyState({ ...bodyState, multiChainSelector: { show: false, wallet: null } });
+                }}
+              />
+            </BottomSheet>
+          )}
+
+          {/* Wallet Install Links */}
+          {bodyState.installLinks?.show && (
+            <BottomSheet
+              borderRadiusType={uiConfig.borderRadiusType}
+              isShown={bodyState.installLinks.show}
+              onClose={() => setBodyState({ ...bodyState, installLinks: { show: false, wallet: null } })}
+            >
+              <p className="w3a--mb-2 w3a--text-center w3a--text-base w3a--font-semibold w3a--text-app-gray-900 dark:w3a--text-app-white">
+                {t("modal.getWallet")}
+              </p>
+              <div className="w3a--my-4 w3a--flex w3a--justify-center">
+                <Image
+                  imageId={`login-${bodyState.installLinks.wallet.name}`}
+                  hoverImageId={`login-${bodyState.installLinks.wallet.name}`}
+                  fallbackImageId="wallet"
+                  height="80"
+                  width="80"
+                  isButton
+                  extension={bodyState.installLinks.wallet.imgExtension}
                 />
-              </BottomSheet>
-            )}
-
-            {/* Wallet Install Links */}
-            {bodyState.installLinks?.show && (
-              <BottomSheet
-                borderRadiusType={uiConfig.borderRadiusType}
-                isShown={bodyState.installLinks.show}
-                onClose={() => setBodyState({ ...bodyState, installLinks: { show: false, wallet: null } })}
-              >
-                <p className="w3a--mb-2 w3a--text-center w3a--text-base w3a--font-semibold w3a--text-app-gray-900 dark:w3a--text-app-white">
-                  {t("modal.getWallet")}
-                </p>
-                <div className="w3a--my-4 w3a--flex w3a--justify-center">
-                  <Image
-                    imageId={`login-${bodyState.installLinks.wallet.name}`}
-                    hoverImageId={`login-${bodyState.installLinks.wallet.name}`}
-                    fallbackImageId="wallet"
-                    height="80"
-                    width="80"
-                    isButton
-                    extension={bodyState.installLinks.wallet.imgExtension}
-                  />
-                </div>
-                <ul className="w3a--flex w3a--flex-col w3a--gap-y-2">
-                  {deviceDetails.platform === "desktop" ? desktopInstallLinks : mobileInstallLinks}
-                </ul>
-              </BottomSheet>
-            )}
-          </div>
+              </div>
+              <ul className="w3a--flex w3a--flex-col w3a--gap-y-2">
+                {deviceDetails.platform === "desktop" ? desktopInstallLinks : mobileInstallLinks}
+              </ul>
+            </BottomSheet>
+          )}
         </div>
-        <Toast />
       </div>
-    </RootContext.Provider>
+      <Toast />
+    </div>
   );
 }
 
+function Root(props: RootProps) {
+  return (
+    <RootProvider>
+      <RootContent {...props} />
+    </RootProvider>
+  );
+}
 export default Root;
