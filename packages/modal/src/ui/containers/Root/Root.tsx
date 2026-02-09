@@ -2,7 +2,6 @@ import { WALLET_CONNECTORS, type WalletRegistryItem } from "@web3auth/no-modal";
 import { JSX, useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import BottomSheet from "../../components/BottomSheet";
 import Footer from "../../components/Footer/Footer";
 import Image from "../../components/Image";
 import Loader from "../../components/Loader";
@@ -15,9 +14,9 @@ import { ExternalButton, mobileOs, MODAL_STATUS } from "../../interfaces";
 import i18n from "../../localeImport";
 import { cn, getBrowserExtensionUrl, getBrowserName, getIcons, getMobileInstallLink, getOsName } from "../../utils";
 import ConnectWallet from "../ConnectWallet";
-import ConnectWalletChainNamespaceSelect from "../ConnectWallet/ConnectWalletChainNamespaceSelect";
 import Login from "../Login";
 import { RootProps } from "./Root.type";
+import RootBodySheets from "./RootBodySheets/RootBodySheets";
 
 function RootContent(props: RootProps) {
   const {
@@ -34,7 +33,7 @@ function RootContent(props: RootProps) {
   const { buttonRadiusType, chainNamespaces, walletRegistry, privacyPolicy, tncLink, displayInstalledExternalWallets, hideSuccessScreen } = uiConfig;
 
   const [t] = useTranslation(undefined, { i18n });
-  const { bodyState, setBodyState } = useRoot();
+  const { bodyState } = useRoot();
 
   const [isSocialLoginsExpanded, setIsSocialLoginsExpanded] = useState(false);
   const [isWalletDetailsExpanded, setIsWalletDetailsExpanded] = useState(false);
@@ -427,50 +426,11 @@ function RootContent(props: RootProps) {
           {/* Footer */}
           <Footer privacyPolicy={privacyPolicy} termsOfService={tncLink} />
 
-          {/* Multi Chain Selector */}
-          {bodyState.multiChainSelector?.show && (
-            <BottomSheet
-              borderRadiusType={uiConfig.borderRadiusType}
-              isShown={bodyState.multiChainSelector.show}
-              onClose={() => setBodyState({ ...bodyState, multiChainSelector: { show: false, wallet: null } })}
-            >
-              <ConnectWalletChainNamespaceSelect
-                isDark={isDark}
-                wallet={bodyState.multiChainSelector.wallet}
-                handleExternalWalletClick={(params) => {
-                  preHandleExternalWalletClick(params);
-                  setBodyState({ ...bodyState, multiChainSelector: { show: false, wallet: null } });
-                }}
-              />
-            </BottomSheet>
-          )}
-
-          {/* Wallet Install Links */}
-          {bodyState.installLinks?.show && (
-            <BottomSheet
-              borderRadiusType={uiConfig.borderRadiusType}
-              isShown={bodyState.installLinks.show}
-              onClose={() => setBodyState({ ...bodyState, installLinks: { show: false, wallet: null } })}
-            >
-              <p className="w3a--mb-2 w3a--text-center w3a--text-base w3a--font-semibold w3a--text-app-gray-900 dark:w3a--text-app-white">
-                {t("modal.getWallet")}
-              </p>
-              <div className="w3a--my-4 w3a--flex w3a--justify-center">
-                <Image
-                  imageId={`login-${bodyState.installLinks.wallet.name}`}
-                  hoverImageId={`login-${bodyState.installLinks.wallet.name}`}
-                  fallbackImageId="wallet"
-                  height="80"
-                  width="80"
-                  isButton
-                  extension={bodyState.installLinks.wallet.imgExtension}
-                />
-              </div>
-              <ul className="w3a--flex w3a--flex-col w3a--gap-y-2">
-                {deviceDetails.platform === "desktop" ? desktopInstallLinks : mobileInstallLinks}
-              </ul>
-            </BottomSheet>
-          )}
+          <RootBodySheets
+            preHandleExternalWalletClick={preHandleExternalWalletClick}
+            desktopInstallLinks={desktopInstallLinks}
+            mobileInstallLinks={mobileInstallLinks}
+          />
         </div>
       </div>
       <Toast />
