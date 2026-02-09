@@ -29,7 +29,7 @@ function Root(props: RootProps) {
     isConnectAndSignAuthenticationMode,
   } = props;
 
-  const { modalState, setModalState, showExternalWalletPage, showPasswordLessInput, areSocialLoginsVisible } = useModalState();
+  const { modalState, setModalState, shouldShowLoginPage, showPasswordLessInput, areSocialLoginsVisible } = useModalState();
   const { isDark, appLogo, deviceDetails, uiConfig } = useWidget();
   const { buttonRadiusType, chainNamespaces, walletRegistry, privacyPolicy, tncLink, displayInstalledExternalWallets, hideSuccessScreen } = uiConfig;
 
@@ -425,7 +425,7 @@ function Root(props: RootProps) {
             ) : (
               <>
                 {/* Login Screen */}
-                {modalState.currentPage === PAGES.LOGIN && showExternalWalletPage && modalState.status === MODAL_STATUS.INITIALIZED && (
+                {modalState.currentPage === PAGES.LOGIN && shouldShowLoginPage && modalState.status === MODAL_STATUS.INITIALIZED && (
                   <Login
                     installedExternalWalletConfig={topInstalledConnectorButtons}
                     totalExternalWallets={allExternalWallets.length}
@@ -438,7 +438,7 @@ function Root(props: RootProps) {
                 )}
                 {/* Connect Wallet Screen */}
                 {modalState.currentPage === PAGES.CONNECT_WALLET &&
-                  (!showExternalWalletPage || isExternalWalletModeOnly) &&
+                  (!shouldShowLoginPage || isExternalWalletModeOnly) &&
                   modalState.status === MODAL_STATUS.INITIALIZED && (
                     <ConnectWallet
                       allRegistryButtons={allRegistryButtons}

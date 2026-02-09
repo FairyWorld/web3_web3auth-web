@@ -21,7 +21,7 @@ type ModalStateContextType = {
   isSmsPasswordLessLoginVisible: boolean;
   showPasswordLessInput: boolean;
   showExternalWalletButton: boolean;
-  showExternalWalletPage: boolean;
+  shouldShowLoginPage: boolean;
 };
 
 type ModalStateProviderProps = {
@@ -123,8 +123,8 @@ export const ModalStateProvider: FC<ModalStateProviderProps> = ({ children, stat
     [modalState.hasExternalWallets, modalState.externalWalletsConfig]
   );
 
-  // TODO: rename this to be correct and refactor the logic
-  const showExternalWalletPage = useMemo(
+  // TODO: check if can further refactor this logic
+  const shouldShowLoginPage = useMemo(
     () =>
       (areSocialLoginsVisible || showPasswordLessInput || !!modalState.externalWalletsConfig[WALLET_CONNECTORS.METAMASK]) &&
       !modalState.externalWalletsVisibility,
@@ -142,7 +142,7 @@ export const ModalStateProvider: FC<ModalStateProviderProps> = ({ children, stat
       isSmsPasswordLessLoginVisible,
       showPasswordLessInput,
       showExternalWalletButton,
-      showExternalWalletPage,
+      shouldShowLoginPage,
     }),
     [
       modalState,
@@ -153,7 +153,7 @@ export const ModalStateProvider: FC<ModalStateProviderProps> = ({ children, stat
       isSmsPasswordLessLoginVisible,
       showPasswordLessInput,
       showExternalWalletButton,
-      showExternalWalletPage,
+      shouldShowLoginPage,
     ]
   );
 
