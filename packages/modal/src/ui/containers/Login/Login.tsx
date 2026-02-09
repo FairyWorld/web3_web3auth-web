@@ -355,17 +355,16 @@ function Login(props: LoginProps) {
       total_external_wallets: totalExternalWallets,
     });
     log.info("handleInstalledWalletClick", wallet);
-    // for non-injected Metamask on desktop, show QR code to connect
+
+    // for non-injected MetaMask on desktop, navigate to ConnectWallet page with pre-selected wallet
     if (wallet.name === WALLET_CONNECTORS.METAMASK && !wallet.hasInjectedWallet && deviceDetails.platform === "desktop") {
       handleExternalWalletClick({ connector: wallet.name });
-      // We should show QR code only if the wallet is not installed.
+      // Set pre-selected wallet and navigate to ConnectWallet page
       setBodyState({
         ...bodyState,
-        metamaskQrCode: {
-          show: true,
-          wallet: wallet,
-        },
+        preSelectedWallet: wallet,
       });
+      if (handleExternalWalletBtnClick) handleExternalWalletBtnClick(true);
       return;
     }
 
