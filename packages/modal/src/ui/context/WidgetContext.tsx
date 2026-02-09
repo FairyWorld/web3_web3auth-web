@@ -1,4 +1,4 @@
-import { WALLET_CONNECTOR_TYPE } from "@web3auth/no-modal";
+import { CONNECTOR_INITIAL_AUTHENTICATION_MODE, WALLET_CONNECTOR_TYPE } from "@web3auth/no-modal";
 import { createContext, type FC, type ReactNode, useContext, useMemo } from "react";
 
 import { browser, ExternalWalletEventType, LoginModalProps, os, platform, SocialLoginEventType } from "../interfaces";
@@ -8,6 +8,7 @@ type WidgetContextType = {
   appLogo?: string;
   deviceDetails: { platform: platform; browser: browser; os: os };
   uiConfig: LoginModalProps;
+  isConnectAndSignAuthenticationMode: boolean;
   handleSocialLoginClick: (params: SocialLoginEventType) => void;
   handleExternalWalletClick: (params: ExternalWalletEventType) => void;
   handleMobileVerifyConnect: (params: { connector: WALLET_CONNECTOR_TYPE }) => void;
@@ -44,6 +45,11 @@ export const WidgetProvider: FC<WidgetProviderProps> = ({
     return isDark ? uiConfig.logoDark : uiConfig.logoLight;
   }, [isDark, uiConfig.logoDark, uiConfig.logoLight]);
 
+  const isConnectAndSignAuthenticationMode = useMemo(
+    () => uiConfig.initialAuthenticationMode === CONNECTOR_INITIAL_AUTHENTICATION_MODE.CONNECT_AND_SIGN,
+    [uiConfig.initialAuthenticationMode]
+  );
+
   return (
     <WidgetContext.Provider
       value={{
@@ -51,6 +57,7 @@ export const WidgetProvider: FC<WidgetProviderProps> = ({
         appLogo,
         deviceDetails,
         uiConfig,
+        isConnectAndSignAuthenticationMode,
         handleSocialLoginClick,
         handleExternalWalletClick,
         handleMobileVerifyConnect,

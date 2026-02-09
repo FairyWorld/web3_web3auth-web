@@ -1,4 +1,4 @@
-import { CONNECTOR_INITIAL_AUTHENTICATION_MODE, WALLET_CONNECTORS, WIDGET_TYPE } from "@web3auth/no-modal";
+import { WALLET_CONNECTORS, WIDGET_TYPE } from "@web3auth/no-modal";
 import { useEffect, useMemo } from "react";
 
 import Modal from "../../components/Modal";
@@ -11,16 +11,11 @@ import Root from "../Root";
 import { WidgetProps } from "./Widget.type";
 
 function WidgetContent() {
-  const { uiConfig, handleExternalWalletClick, handleMobileVerifyConnect, closeModal } = useWidget();
+  const { uiConfig, handleExternalWalletClick, handleMobileVerifyConnect, closeModal, isConnectAndSignAuthenticationMode } = useWidget();
 
   const { modalState, setModalState } = useModalState();
 
-  const { widgetType, initialAuthenticationMode } = uiConfig;
-
-  const isConnectAndSignAuthenticationMode = useMemo(
-    () => initialAuthenticationMode === CONNECTOR_INITIAL_AUTHENTICATION_MODE.CONNECT_AND_SIGN,
-    [initialAuthenticationMode]
-  );
+  const { widgetType } = uiConfig;
 
   const onCloseModal = () => {
     setModalState((prevState) => ({
@@ -77,13 +72,7 @@ function WidgetContent() {
     }
   }, [modalState, handleExternalWalletClick]);
 
-  const rootElement = (
-    <Root
-      onCloseLoader={onCloseLoader}
-      isConnectAndSignAuthenticationMode={isConnectAndSignAuthenticationMode}
-      handleMobileVerifyConnect={handleMobileVerifyConnect}
-    />
-  );
+  const rootElement = <Root onCloseLoader={onCloseLoader} handleMobileVerifyConnect={handleMobileVerifyConnect} />;
 
   if (widgetType === WIDGET_TYPE.MODAL) {
     return (
