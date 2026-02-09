@@ -11,10 +11,8 @@ export type BodyState = {
     show: boolean;
     wallet: ExternalButton;
   };
-  metamaskQrCode: {
-    show: boolean;
-    wallet: ExternalButton;
-  };
+  // Pre-selected wallet to show QR code directly when navigating to ConnectWallet page
+  preSelectedWallet?: ExternalButton;
 };
 
 export type ToastState = {
@@ -31,10 +29,6 @@ export type RootContextType = {
 
 export const RootContext = createContext<RootContextType>({
   bodyState: {
-    metamaskQrCode: {
-      show: false,
-      wallet: null,
-    },
     installLinks: {
       show: false,
       wallet: null,
@@ -43,6 +37,7 @@ export const RootContext = createContext<RootContextType>({
       show: false,
       wallet: null,
     },
+    preSelectedWallet: null,
   },
   toast: {
     message: "",

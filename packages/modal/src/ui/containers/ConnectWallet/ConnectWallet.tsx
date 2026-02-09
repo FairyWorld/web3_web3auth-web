@@ -40,6 +40,8 @@ function ConnectWallet(props: ConnectWalletProps) {
   const [walletSearch, setWalletSearch] = useState<string>("");
   const [selectedChain, setSelectedChain] = useState<string>("all");
   const [isShowAllWallets, setIsShowAllWallets] = useState<boolean>(false);
+  // Track if user came directly from Login page with a pre-selected wallet
+  const [isPreSelectedFromLogin, setIsPreSelectedFromLogin] = useState(false);
 
   const handleBack = () => {
     if (!selectedWallet && currentPage === CONNECT_WALLET_PAGES.CONNECT_WALLET && onBackClick) {
@@ -48,6 +50,15 @@ function ConnectWallet(props: ConnectWalletProps) {
     }
 
     if (selectedWallet) {
+      // If user came from Login page with pre-selected wallet, go back to Login
+      if (isPreSelectedFromLogin && onBackClick) {
+        setSelectedWallet(false);
+        setIsPreSelectedFromLogin(false);
+        handleWalletDetailsHeight(); // Reset modal height
+        onBackClick(false);
+        return;
+      }
+      // Otherwise, go back to wallet list
       setCurrentPage(CONNECT_WALLET_PAGES.CONNECT_WALLET);
       setSelectedWallet(false);
       handleWalletDetailsHeight();
@@ -160,6 +171,22 @@ function ConnectWallet(props: ConnectWalletProps) {
       setIsShowAllWallets(false);
     }
   }, [walletDiscoverySupported, selectedChain, totalExternalWalletsCount]);
+
+  // Handle pre-selected wallet from Login page (e.g., MetaMask QR code flow)
+  useEffect(() => {
+    if (bodyState.preSelectedWallet) {
+      setSelectedButton(bodyState.preSelectedWallet);
+      setSelectedWallet(true);
+      setCurrentPage(CONNECT_WALLET_PAGES.SELECTED_WALLET);
+      setIsPreSelectedFromLogin(true);
+      handleWalletDetailsHeight();
+      // Clear pre-selected wallet after handling
+      setBodyState((prev) => ({
+        ...prev,
+        preSelectedWallet: null,
+      }));
+    }
+  }, [bodyState.preSelectedWallet, handleWalletDetailsHeight, setBodyState]);
 
   /**
    * Wallet click logic
