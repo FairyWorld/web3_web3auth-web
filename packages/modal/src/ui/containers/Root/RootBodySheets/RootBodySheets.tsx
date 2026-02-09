@@ -3,16 +3,17 @@ import { useTranslation } from "react-i18next";
 
 import BottomSheet from "../../../components/BottomSheet";
 import Image from "../../../components/Image";
+import { useModalState } from "../../../context/ModalStateContext";
 import { useBodyState } from "../../../context/RootContext";
 import { useWidget } from "../../../context/WidgetContext";
 import { mobileOs } from "../../../interfaces";
 import i18n from "../../../localeImport";
 import { cn, getBrowserExtensionUrl, getBrowserName, getIcons, getMobileInstallLink, getOsName } from "../../../utils";
 import ConnectWalletChainNamespaceSelect from "../../ConnectWallet/ConnectWalletChainNamespaceSelect";
-import { RootBodySheetsProps } from "./RootBodySheets.type";
 
-export default function RootBodySheets({ preHandleExternalWalletClick }: RootBodySheetsProps) {
+export default function RootBodySheets() {
   const [t] = useTranslation(undefined, { i18n });
+  const { preHandleExternalWalletClick } = useModalState();
   const { bodyState, setBodyState } = useBodyState();
   const { isDark, deviceDetails, uiConfig } = useWidget();
   const { buttonRadiusType } = uiConfig;

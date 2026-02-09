@@ -1,11 +1,11 @@
-import { CONNECTOR_INITIAL_AUTHENTICATION_MODE, CONNECTOR_NAMES, WALLET_CONNECTOR_TYPE, WALLET_CONNECTORS, WIDGET_TYPE } from "@web3auth/no-modal";
+import { CONNECTOR_INITIAL_AUTHENTICATION_MODE, WALLET_CONNECTORS, WIDGET_TYPE } from "@web3auth/no-modal";
 import { useEffect, useMemo } from "react";
 
 import Modal from "../../components/Modal";
 import { PAGES } from "../../constants";
 import { ModalStateProvider, useModalState } from "../../context/ModalStateContext";
 import { useWidget } from "../../context/WidgetContext";
-import { type ExternalWalletEventType, MODAL_STATUS, type SocialLoginEventType } from "../../interfaces";
+import { MODAL_STATUS, type SocialLoginEventType } from "../../interfaces";
 import Embed from "../Embed";
 import Root from "../Root";
 import { WidgetProps } from "./Widget.type";
@@ -22,18 +22,6 @@ function WidgetContent() {
     () => initialAuthenticationMode === CONNECTOR_INITIAL_AUTHENTICATION_MODE.CONNECT_AND_SIGN,
     [initialAuthenticationMode]
   );
-
-  const preHandleExternalWalletClick = (params: ExternalWalletEventType) => {
-    const { connector } = params;
-    setModalState((prevState) => ({
-      ...prevState,
-      detailedLoaderConnector: connector,
-      detailedLoaderConnectorName: CONNECTOR_NAMES[connector as WALLET_CONNECTOR_TYPE],
-    }));
-
-    // Call the passed-in handler with the params
-    if (handleExternalWalletClick) handleExternalWalletClick(params);
-  };
 
   const preHandleSocialWalletClick = (params: SocialLoginEventType) => {
     const { loginParams } = params;
@@ -112,7 +100,6 @@ function WidgetContent() {
     <Root
       handleSocialLoginClick={(params: SocialLoginEventType) => preHandleSocialWalletClick(params)}
       handleExternalWalletBtnClick={handleExternalWalletBtnClick}
-      preHandleExternalWalletClick={preHandleExternalWalletClick}
       onCloseLoader={onCloseLoader}
       isConnectAndSignAuthenticationMode={isConnectAndSignAuthenticationMode}
       handleMobileVerifyConnect={handleMobileVerifyConnect}
@@ -145,13 +132,13 @@ function WidgetContent() {
 
 function Widget(props: WidgetProps) {
   const { stateListener } = props;
-  const { uiConfig } = useWidget();
+  const { uiConfig, handleExternalWalletClick } = useWidget();
   const { widgetType } = uiConfig;
 
   const initialVisibility = useMemo(() => widgetType === WIDGET_TYPE.EMBED, [widgetType]);
 
   return (
-    <ModalStateProvider stateListener={stateListener} initialVisibility={initialVisibility}>
+    <ModalStateProvider stateListener={stateListener} initialVisibility={initialVisibility} onExternalWalletClick={handleExternalWalletClick}>
       <WidgetContent />
     </ModalStateProvider>
   );

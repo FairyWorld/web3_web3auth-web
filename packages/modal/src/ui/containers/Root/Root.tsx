@@ -15,16 +15,11 @@ import { RootProps } from "./Root.type";
 import RootBodySheets from "./RootBodySheets/RootBodySheets";
 
 function RootContent(props: RootProps) {
-  const {
-    handleExternalWalletBtnClick,
-    handleMobileVerifyConnect,
-    onCloseLoader,
-    handleSocialLoginClick,
-    preHandleExternalWalletClick,
-    isConnectAndSignAuthenticationMode,
-  } = props;
+  const { handleExternalWalletBtnClick, handleMobileVerifyConnect, onCloseLoader, handleSocialLoginClick, isConnectAndSignAuthenticationMode } =
+    props;
 
-  const { modalState, setModalState, shouldShowLoginPage, showPasswordLessInput, areSocialLoginsVisible } = useModalState();
+  const { modalState, setModalState, preHandleExternalWalletClick, shouldShowLoginPage, showPasswordLessInput, areSocialLoginsVisible } =
+    useModalState();
   const { appLogo, deviceDetails, uiConfig } = useWidget();
   const { chainNamespaces, walletRegistry, privacyPolicy, tncLink, displayInstalledExternalWallets, hideSuccessScreen } = uiConfig;
 
@@ -309,7 +304,7 @@ function RootContent(props: RootProps) {
           {/* Footer */}
           <Footer privacyPolicy={privacyPolicy} termsOfService={tncLink} />
 
-          <RootBodySheets preHandleExternalWalletClick={preHandleExternalWalletClick} />
+          <RootBodySheets />
         </div>
       </div>
       <Toast />
