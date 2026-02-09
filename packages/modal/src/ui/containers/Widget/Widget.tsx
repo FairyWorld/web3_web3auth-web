@@ -5,13 +5,13 @@ import Modal from "../../components/Modal";
 import { PAGES } from "../../constants";
 import { ModalStateProvider, useModalState } from "../../context/ModalStateContext";
 import { useWidget } from "../../context/WidgetContext";
-import { MODAL_STATUS, type SocialLoginEventType } from "../../interfaces";
+import { MODAL_STATUS } from "../../interfaces";
 import Embed from "../Embed";
 import Root from "../Root";
 import { WidgetProps } from "./Widget.type";
 
 function WidgetContent() {
-  const { uiConfig, handleSocialLoginClick, handleExternalWalletClick, handleMobileVerifyConnect, closeModal } = useWidget();
+  const { uiConfig, handleExternalWalletClick, handleMobileVerifyConnect, closeModal } = useWidget();
 
   const { modalState, setModalState } = useModalState();
 
@@ -21,14 +21,6 @@ function WidgetContent() {
     () => initialAuthenticationMode === CONNECTOR_INITIAL_AUTHENTICATION_MODE.CONNECT_AND_SIGN,
     [initialAuthenticationMode]
   );
-
-  const preHandleSocialWalletClick = (params: SocialLoginEventType) => {
-    const { loginParams } = params;
-    setModalState((prevState) => {
-      return { ...prevState, detailedLoaderConnector: loginParams.authConnection, detailedLoaderConnectorName: loginParams.name };
-    });
-    handleSocialLoginClick(params);
-  };
 
   const onCloseModal = () => {
     setModalState((prevState) => ({
@@ -87,7 +79,6 @@ function WidgetContent() {
 
   const rootElement = (
     <Root
-      handleSocialLoginClick={(params: SocialLoginEventType) => preHandleSocialWalletClick(params)}
       onCloseLoader={onCloseLoader}
       isConnectAndSignAuthenticationMode={isConnectAndSignAuthenticationMode}
       handleMobileVerifyConnect={handleMobileVerifyConnect}
@@ -120,7 +111,7 @@ function WidgetContent() {
 
 function Widget(props: WidgetProps) {
   const { stateListener } = props;
-  const { uiConfig, handleExternalWalletClick, handleShowExternalWallets } = useWidget();
+  const { uiConfig, handleExternalWalletClick, handleShowExternalWallets, handleSocialLoginClick } = useWidget();
   const { widgetType } = uiConfig;
 
   const initialVisibility = useMemo(() => widgetType === WIDGET_TYPE.EMBED, [widgetType]);
@@ -130,6 +121,7 @@ function Widget(props: WidgetProps) {
       stateListener={stateListener}
       initialVisibility={initialVisibility}
       onExternalWalletClick={handleExternalWalletClick}
+      onSocialLoginClick={handleSocialLoginClick}
       onShowExternalWallets={handleShowExternalWallets}
     >
       <WidgetContent />

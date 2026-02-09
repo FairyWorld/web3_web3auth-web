@@ -1,10 +1,9 @@
-import type { ExternalButton, ExternalWalletEventType, SocialLoginEventType } from "../../interfaces";
+import type { ExternalButton, ExternalWalletEventType } from "../../interfaces";
 
 export interface LoginProps {
   installedExternalWalletConfig: ExternalButton[];
   totalExternalWallets: number;
   remainingUndisplayedWallets: number;
-  handleSocialLoginClick: (params: SocialLoginEventType) => void;
   handleExternalWalletClick: (params: ExternalWalletEventType) => void;
   handleSocialLoginHeight: () => void;
 }

@@ -39,14 +39,8 @@ const restrictedLoginMethods: string[] = [
 ];
 
 function Login(props: LoginProps) {
-  const {
-    handleSocialLoginHeight,
-    installedExternalWalletConfig,
-    handleSocialLoginClick,
-    totalExternalWallets,
-    remainingUndisplayedWallets,
-    handleExternalWalletClick,
-  } = props;
+  const { handleSocialLoginHeight, installedExternalWalletConfig, totalExternalWallets, remainingUndisplayedWallets, handleExternalWalletClick } =
+    props;
 
   const [t] = useTranslation(undefined, { i18n });
   const { bodyState, setBodyState } = useBodyState();
@@ -62,6 +56,7 @@ function Login(props: LoginProps) {
     showPasswordLessInput,
     showExternalWalletButton,
     handleShowExternalWallets,
+    preHandleSocialLoginClick: handleSocialLoginClick,
   } = useModalState();
   const { modalVisibility: isModalVisible, socialLoginsConfig } = modalState;
   const {

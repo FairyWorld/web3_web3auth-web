@@ -15,7 +15,7 @@ import { RootProps } from "./Root.type";
 import RootBodySheets from "./RootBodySheets/RootBodySheets";
 
 function RootContent(props: RootProps) {
-  const { handleMobileVerifyConnect, onCloseLoader, handleSocialLoginClick, isConnectAndSignAuthenticationMode } = props;
+  const { handleMobileVerifyConnect, onCloseLoader, isConnectAndSignAuthenticationMode } = props;
 
   const { modalState, preHandleExternalWalletClick, shouldShowLoginPage, showPasswordLessInput, areSocialLoginsVisible } = useModalState();
   const { appLogo, deviceDetails, uiConfig } = useWidget();
@@ -259,7 +259,6 @@ function RootContent(props: RootProps) {
                   installedExternalWalletConfig={topInstalledConnectorButtons}
                   totalExternalWallets={allExternalWallets.length}
                   remainingUndisplayedWallets={remainingUndisplayedWallets}
-                  handleSocialLoginClick={handleSocialLoginClick}
                   handleSocialLoginHeight={handleSocialLoginHeight}
                   handleExternalWalletClick={preHandleExternalWalletClick}
                 />
