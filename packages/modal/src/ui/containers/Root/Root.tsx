@@ -1,5 +1,6 @@
 import { WALLET_CONNECTORS, type WalletRegistryItem } from "@web3auth/no-modal";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { twMerge } from "tailwind-merge";
 
 import Footer from "../../components/Footer/Footer";
 import Loader from "../../components/Loader";
@@ -196,7 +197,7 @@ function RootContent(props: RootProps) {
         }}
       >
         <div className="w3a--modal-curtain" />
-        <div ref={contentRef} className="w3a--relative w3a--flex w3a--flex-none w3a--flex-col w3a--p-6">
+        <div ref={contentRef} className={twMerge("w3a--relative w3a--flex w3a--flex-col w3a--p-6", isShowLoader ? "w3a--flex-1" : "w3a--flex-none")}>
           {/* Content */}
           {isShowLoader ? (
             <Loader
