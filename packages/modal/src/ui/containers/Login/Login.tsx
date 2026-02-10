@@ -39,7 +39,7 @@ const restrictedLoginMethods: string[] = [
 ];
 
 function Login(props: LoginProps) {
-  const { handleSocialLoginHeight, installedExternalWalletConfig, totalExternalWallets, remainingUndisplayedWallets } = props;
+  const { installedExternalWalletConfig, totalExternalWallets, remainingUndisplayedWallets } = props;
 
   const [t] = useTranslation(undefined, { i18n });
   const { bodyState, setBodyState } = useBodyState();
@@ -91,7 +91,6 @@ function Login(props: LoginProps) {
   const handleSocialLoginExpand = () => {
     setExpandSocialLogins((prev) => !prev);
     setIsPasswordLessCtaClicked(false);
-    handleSocialLoginHeight();
   };
 
   useEffect(() => {

@@ -4,5 +4,4 @@ export interface LoginProps {
   installedExternalWalletConfig: ExternalButton[];
   totalExternalWallets: number;
   remainingUndisplayedWallets: number;
-  handleSocialLoginHeight: () => void;
 }
