@@ -21,7 +21,6 @@ function ConnectWallet(props: ConnectWalletProps) {
     connectorVisibilityMap,
     handleExternalWalletClick,
     handleWalletDetailsHeight,
-    disableBackButton,
     isExternalWalletModeOnly,
   } = props;
 
@@ -74,6 +73,10 @@ function ConnectWallet(props: ConnectWalletProps) {
       handleWalletDetailsHeight();
     }
   };
+
+  const disableBackButton = useMemo(() => {
+    return bodyState.installLinks?.show || bodyState.multiChainSelector?.show;
+  }, [bodyState.installLinks?.show, bodyState.multiChainSelector?.show]);
 
   const walletDiscoverySupported = useMemo(() => {
     const supported = walletRegistry && (Object.keys(walletRegistry.default || {}).length > 0 || Object.keys(walletRegistry.others || {}).length > 0);

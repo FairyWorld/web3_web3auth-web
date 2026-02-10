@@ -6,7 +6,7 @@ import Loader from "../../components/Loader";
 import Toast from "../../components/Toast";
 import { DEFAULT_METAMASK_WALLET_REGISTRY_ITEM, PAGES } from "../../constants";
 import { useModalState } from "../../context/ModalStateContext";
-import { RootProvider, useRoot } from "../../context/RootContext";
+import { RootProvider } from "../../context/RootContext";
 import { useWidget } from "../../context/WidgetContext";
 import { ExternalButton, MODAL_STATUS } from "../../interfaces";
 import ConnectWallet from "../ConnectWallet";
@@ -20,8 +20,6 @@ function RootContent(props: RootProps) {
   const { modalState, preHandleExternalWalletClick, shouldShowLoginPage, showPasswordLessInput, areSocialLoginsVisible } = useModalState();
   const { appLogo, deviceDetails, uiConfig, isConnectAndSignAuthenticationMode, handleMobileVerifyConnect } = useWidget();
   const { chainNamespaces, walletRegistry, privacyPolicy, tncLink, displayInstalledExternalWallets, hideSuccessScreen } = uiConfig;
-
-  const { bodyState } = useRoot();
 
   const [isSocialLoginsExpanded, setIsSocialLoginsExpanded] = useState(false);
   const [isWalletDetailsExpanded, setIsWalletDetailsExpanded] = useState(false);
@@ -274,7 +272,6 @@ function RootContent(props: RootProps) {
                     handleWalletDetailsHeight={handleWalletDetailsHeight}
                     isExternalWalletModeOnly={isExternalWalletModeOnly}
                     handleExternalWalletClick={preHandleExternalWalletClick}
-                    disableBackButton={bodyState.installLinks?.show || bodyState.multiChainSelector?.show}
                   />
                 )}
             </>

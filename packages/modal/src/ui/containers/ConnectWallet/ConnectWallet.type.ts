@@ -8,6 +8,5 @@ export interface ConnectWalletProps {
   connectorVisibilityMap: Record<string, boolean>;
   handleExternalWalletClick: (params: { connector: string; chainNamespace?: ChainNamespaceType }) => void;
   handleWalletDetailsHeight: () => void;
-  disableBackButton?: boolean;
   isExternalWalletModeOnly?: boolean;
 }
