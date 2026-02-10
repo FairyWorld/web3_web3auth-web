@@ -214,7 +214,7 @@ function RootContent(props: RootProps) {
           ) : (
             <>
               {/* Login Screen */}
-              {modalState.currentPage === PAGES.LOGIN && shouldShowLoginPage && modalState.status === MODAL_STATUS.INITIALIZED && (
+              {modalState.currentPage === PAGES.LOGIN_OPTIONS && shouldShowLoginPage && modalState.status === MODAL_STATUS.INITIALIZED && (
                 <Login
                   installedExternalWalletConfig={topInstalledConnectorButtons}
                   totalExternalWallets={allExternalWallets.length}
@@ -222,7 +222,7 @@ function RootContent(props: RootProps) {
                 />
               )}
               {/* Connect Wallet Screen */}
-              {modalState.currentPage === PAGES.CONNECT_WALLET &&
+              {modalState.currentPage === PAGES.WALLET_LIST &&
                 (!shouldShowLoginPage || isExternalWalletModeOnly) &&
                 modalState.status === MODAL_STATUS.INITIALIZED && (
                   <ConnectWallet

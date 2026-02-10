@@ -283,21 +283,15 @@ export class LoginModal {
     });
   };
 
-  addSocialLogins = (
-    connector: WALLET_CONNECTOR_TYPE,
-    loginMethods: LoginMethodConfig,
-    loginMethodsOrder: string[],
-    uiConfig: Omit<UIConfig, "connectorListener">
-  ): void => {
+  addSocialLogins = (loginMethods: LoginMethodConfig, loginMethodsOrder: string[], uiConfig: Omit<UIConfig, "connectorListener">): void => {
     this.setState({
       socialLoginsConfig: {
-        connector,
         loginMethods,
         loginMethodsOrder,
         uiConfig,
       },
     });
-    log.info("addSocialLogins", connector, loginMethods, loginMethodsOrder, uiConfig);
+    log.info("addSocialLogins", loginMethods, loginMethodsOrder, uiConfig);
   };
 
   addWalletLogins = (
@@ -371,15 +365,15 @@ export class LoginModal {
 
   private handleSocialLoginClick = (params: SocialLoginEventType) => {
     log.info("social login clicked", params);
-    const { connector, loginParams } = params;
+    const { loginParams } = params;
     this.analytics?.track(ANALYTICS_EVENTS.SOCIAL_LOGIN_SELECTED, {
-      connector,
+      connector: WALLET_CONNECTORS.AUTH,
       auth_connection: loginParams.authConnection,
       auth_connection_id: loginParams.authConnectionId,
       group_auth_connection_id: loginParams.groupedAuthConnectionId,
     });
     if (this.callbacks.onSocialLogin) {
-      this.callbacks.onSocialLogin({ connector, loginParams });
+      this.callbacks.onSocialLogin({ loginParams });
     }
   };
 
@@ -422,7 +416,7 @@ export class LoginModal {
           status: MODAL_STATUS.CONNECTED,
           modalVisibility: true,
           postLoadingMessage: "modal.post-loading.connected",
-          currentPage: PAGES.LOGIN,
+          currentPage: PAGES.LOGIN_OPTIONS,
         });
       } else {
         this.setState({

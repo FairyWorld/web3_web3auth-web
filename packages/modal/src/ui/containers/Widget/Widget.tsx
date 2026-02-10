@@ -22,7 +22,7 @@ function WidgetContent() {
       ...prevState,
       externalWalletsVisibility: false,
       modalVisibility: false,
-      currentPage: PAGES.LOGIN,
+      currentPage: PAGES.LOGIN_OPTIONS,
     }));
     closeModal();
   };

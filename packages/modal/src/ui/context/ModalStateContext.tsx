@@ -49,7 +49,7 @@ const initialModalState: ModalState = {
   status: MODAL_STATUS.INITIALIZED,
   modalVisibility: false,
   externalWalletsVisibility: false,
-  currentPage: PAGES.LOGIN,
+  currentPage: PAGES.LOGIN_OPTIONS,
 
   // Loading State
   postLoadingMessage: "",
@@ -67,7 +67,6 @@ const initialModalState: ModalState = {
   socialLoginsConfig: {
     loginMethods: {},
     loginMethodsOrder: [],
-    connector: "" as WALLET_CONNECTOR_TYPE,
     uiConfig: {},
   },
   externalWalletsConfig: {},

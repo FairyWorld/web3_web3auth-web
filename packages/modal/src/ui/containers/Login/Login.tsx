@@ -1,13 +1,6 @@
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 import { AUTH_CONNECTION, AUTH_CONNECTION_TYPE } from "@web3auth/auth";
-import {
-  ANALYTICS_EVENTS,
-  log,
-  type ModalSignInMethodType,
-  type WALLET_CONNECTOR_TYPE,
-  WALLET_CONNECTORS,
-  WalletLoginError,
-} from "@web3auth/no-modal";
+import { ANALYTICS_EVENTS, log, type ModalSignInMethodType, WALLET_CONNECTORS, WalletLoginError } from "@web3auth/no-modal";
 import { MouseEvent as ReactMouseEvent, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -154,7 +147,6 @@ function Login(props: LoginProps) {
         isDark,
         isPrimaryBtn,
         name: name === "Twitter" ? "X" : name,
-        connector: socialLoginsConfig.connector,
         loginParams: {
           authConnection: connectorConfig.authConnection || (method as AUTH_CONNECTION_TYPE),
           authConnectionId: connectorConfig.authConnectionId,
@@ -225,7 +217,6 @@ function Login(props: LoginProps) {
         const connectorConfig = socialLoginsConfig.loginMethods[AUTH_CONNECTION.EMAIL_PASSWORDLESS];
         if (connectorConfig.isDefault) {
           return handleSocialLoginClick({
-            connector: socialLoginsConfig.connector as WALLET_CONNECTOR_TYPE,
             loginParams: {
               authConnection: AUTH_CONNECTION.EMAIL_PASSWORDLESS,
               authConnectionId: connectorConfig.authConnectionId,
@@ -249,7 +240,6 @@ function Login(props: LoginProps) {
         const connectorConfig = socialLoginsConfig.loginMethods[AUTH_CONNECTION.SMS_PASSWORDLESS];
         if (connectorConfig.isDefault) {
           return handleSocialLoginClick({
-            connector: socialLoginsConfig.connector as WALLET_CONNECTOR_TYPE,
             loginParams: {
               authConnection: AUTH_CONNECTION.SMS_PASSWORDLESS,
               authConnectionId: connectorConfig.authConnectionId,
@@ -313,7 +303,6 @@ function Login(props: LoginProps) {
 
       if (result?.data?.id_token) {
         return handleSocialLoginClick({
-          connector: socialLoginsConfig.connector as WALLET_CONNECTOR_TYPE,
           loginParams: {
             authConnection: authConnection,
             authConnectionId: connectorConfig.authConnectionId,
@@ -335,7 +324,7 @@ function Login(props: LoginProps) {
     (flag: boolean) => {
       setModalState({
         ...modalState,
-        currentPage: PAGES.CONNECT_WALLET,
+        currentPage: PAGES.WALLET_LIST,
       });
 
       handleShowExternalWallets(flag);
