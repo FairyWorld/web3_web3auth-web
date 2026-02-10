@@ -336,7 +336,7 @@ function Login(props: LoginProps) {
     (flag: boolean) => {
       setModalState({
         ...modalState,
-        currentPage: PAGES.CONNECT_WALLET,
+        currentPage: PAGES.WALLET_LIST,
       });
 
       handleShowExternalWallets(flag);

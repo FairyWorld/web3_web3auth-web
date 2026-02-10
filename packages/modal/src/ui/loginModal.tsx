@@ -422,7 +422,7 @@ export class LoginModal {
           status: MODAL_STATUS.CONNECTED,
           modalVisibility: true,
           postLoadingMessage: "modal.post-loading.connected",
-          currentPage: PAGES.LOGIN,
+          currentPage: PAGES.LOGIN_OPTIONS,
         });
       } else {
         this.setState({
