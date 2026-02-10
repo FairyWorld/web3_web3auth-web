@@ -17,7 +17,7 @@ import RootBodySheets from "./RootBodySheets/RootBodySheets";
 function RootContent(props: RootProps) {
   const { onCloseLoader } = props;
 
-  const { modalState, preHandleExternalWalletClick, shouldShowLoginPage, showPasswordLessInput, areSocialLoginsVisible } = useModalState();
+  const { modalState, shouldShowLoginPage, showPasswordLessInput, areSocialLoginsVisible } = useModalState();
   const { appLogo, deviceDetails, uiConfig, isConnectAndSignAuthenticationMode, handleMobileVerifyConnect } = useWidget();
   const { chainNamespaces, walletRegistry, privacyPolicy, tncLink, displayInstalledExternalWallets, hideSuccessScreen } = uiConfig;
 
@@ -258,7 +258,6 @@ function RootContent(props: RootProps) {
                   totalExternalWallets={allExternalWallets.length}
                   remainingUndisplayedWallets={remainingUndisplayedWallets}
                   handleSocialLoginHeight={handleSocialLoginHeight}
-                  handleExternalWalletClick={preHandleExternalWalletClick}
                 />
               )}
               {/* Connect Wallet Screen */}
@@ -271,7 +270,6 @@ function RootContent(props: RootProps) {
                     customConnectorButtons={customConnectorButtons}
                     handleWalletDetailsHeight={handleWalletDetailsHeight}
                     isExternalWalletModeOnly={isExternalWalletModeOnly}
-                    handleExternalWalletClick={preHandleExternalWalletClick}
                   />
                 )}
             </>

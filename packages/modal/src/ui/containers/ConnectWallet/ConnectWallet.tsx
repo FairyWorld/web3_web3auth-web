@@ -15,20 +15,13 @@ import ConnectWalletQrCode from "./ConnectWalletQrCode";
 import ConnectWalletSearch from "./ConnectWalletSearch";
 
 function ConnectWallet(props: ConnectWalletProps) {
-  const {
-    allRegistryButtons,
-    customConnectorButtons,
-    connectorVisibilityMap,
-    handleExternalWalletClick,
-    handleWalletDetailsHeight,
-    isExternalWalletModeOnly,
-  } = props;
+  const { allRegistryButtons, customConnectorButtons, connectorVisibilityMap, handleWalletDetailsHeight, isExternalWalletModeOnly } = props;
 
   const { bodyState, setBodyState } = useBodyState();
   const { analytics } = useContext(AnalyticsContext);
   const { deviceDetails, isDark, uiConfig } = useWidget();
   const { walletRegistry } = uiConfig;
-  const { modalState, setModalState, handleShowExternalWallets } = useModalState();
+  const { modalState, setModalState, handleShowExternalWallets, preHandleExternalWalletClick: handleExternalWalletClick } = useModalState();
   const { externalWalletsConfig: config, walletConnectUri, metamaskConnectUri } = modalState;
 
   const [currentPage, setCurrentPage] = useState(CONNECT_WALLET_PAGES.CONNECT_WALLET);
