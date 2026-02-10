@@ -1,57 +1,21 @@
-import { CONNECTOR_INITIAL_AUTHENTICATION_MODE, CONNECTOR_NAMES, WALLET_CONNECTOR_TYPE, WALLET_CONNECTORS, WIDGET_TYPE } from "@web3auth/no-modal";
+import { WALLET_CONNECTORS, WIDGET_TYPE } from "@web3auth/no-modal";
 import { useEffect, useMemo } from "react";
 
 import Modal from "../../components/Modal";
 import { PAGES } from "../../constants";
 import { ModalStateProvider, useModalState } from "../../context/ModalStateContext";
 import { useWidget } from "../../context/WidgetContext";
-import { type ExternalWalletEventType, MODAL_STATUS, type SocialLoginEventType } from "../../interfaces";
+import { MODAL_STATUS } from "../../interfaces";
 import Embed from "../Embed";
 import Root from "../Root";
 import { WidgetProps } from "./Widget.type";
 
 function WidgetContent() {
-  const { uiConfig, handleSocialLoginClick, handleExternalWalletClick, handleMobileVerifyConnect, handleShowExternalWallets, closeModal } =
-    useWidget();
+  const { uiConfig, handleExternalWalletClick, closeModal, isConnectAndSignAuthenticationMode } = useWidget();
 
   const { modalState, setModalState } = useModalState();
 
-  const { widgetType, initialAuthenticationMode } = uiConfig;
-
-  const isConnectAndSignAuthenticationMode = useMemo(
-    () => initialAuthenticationMode === CONNECTOR_INITIAL_AUTHENTICATION_MODE.CONNECT_AND_SIGN,
-    [initialAuthenticationMode]
-  );
-
-  const preHandleExternalWalletClick = (params: ExternalWalletEventType) => {
-    const { connector } = params;
-    setModalState((prevState) => ({
-      ...prevState,
-      detailedLoaderConnector: connector,
-      detailedLoaderConnectorName: CONNECTOR_NAMES[connector as WALLET_CONNECTOR_TYPE],
-    }));
-
-    // Call the passed-in handler with the params
-    if (handleExternalWalletClick) handleExternalWalletClick(params);
-  };
-
-  const preHandleSocialWalletClick = (params: SocialLoginEventType) => {
-    const { loginParams } = params;
-    setModalState((prevState) => {
-      return { ...prevState, detailedLoaderConnector: loginParams.authConnection, detailedLoaderConnectorName: loginParams.name };
-    });
-    handleSocialLoginClick(params);
-  };
-
-  const handleExternalWalletBtnClick = (flag: boolean) => {
-    setModalState((prevState) => {
-      return {
-        ...prevState,
-        externalWalletsVisibility: flag,
-      };
-    });
-    if (flag && handleShowExternalWallets) handleShowExternalWallets(modalState.externalWalletsInitialized);
-  };
+  const { widgetType } = uiConfig;
 
   const onCloseModal = () => {
     setModalState((prevState) => ({
@@ -108,16 +72,7 @@ function WidgetContent() {
     }
   }, [modalState, handleExternalWalletClick]);
 
-  const rootElement = (
-    <Root
-      handleSocialLoginClick={(params: SocialLoginEventType) => preHandleSocialWalletClick(params)}
-      handleExternalWalletBtnClick={handleExternalWalletBtnClick}
-      preHandleExternalWalletClick={preHandleExternalWalletClick}
-      onCloseLoader={onCloseLoader}
-      isConnectAndSignAuthenticationMode={isConnectAndSignAuthenticationMode}
-      handleMobileVerifyConnect={handleMobileVerifyConnect}
-    />
-  );
+  const rootElement = <Root onCloseLoader={onCloseLoader} />;
 
   if (widgetType === WIDGET_TYPE.MODAL) {
     return (
@@ -145,13 +100,9 @@ function WidgetContent() {
 
 function Widget(props: WidgetProps) {
   const { stateListener } = props;
-  const { uiConfig } = useWidget();
-  const { widgetType } = uiConfig;
-
-  const initialVisibility = useMemo(() => widgetType === WIDGET_TYPE.EMBED, [widgetType]);
 
   return (
-    <ModalStateProvider stateListener={stateListener} initialVisibility={initialVisibility}>
+    <ModalStateProvider stateListener={stateListener}>
       <WidgetContent />
     </ModalStateProvider>
   );

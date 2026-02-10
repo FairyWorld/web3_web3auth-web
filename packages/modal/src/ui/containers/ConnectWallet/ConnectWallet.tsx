@@ -1,10 +1,10 @@
 import { ANALYTICS_EVENTS, type ChainNamespaceType, log, type WALLET_CONNECTOR_TYPE, WALLET_CONNECTORS } from "@web3auth/no-modal";
-import { FormEvent, useContext, useEffect, useMemo, useState } from "react";
+import { FormEvent, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
-import { CONNECT_WALLET_PAGES } from "../../constants";
+import { CONNECT_WALLET_PAGES, PAGES } from "../../constants";
 import { AnalyticsContext } from "../../context/AnalyticsContext";
 import { useModalState } from "../../context/ModalStateContext";
-import { RootContext } from "../../context/RootContext";
+import { useBodyState } from "../../context/RootContext";
 import { useWidget } from "../../context/WidgetContext";
 import { ExternalButton } from "../../interfaces";
 import { ConnectWalletProps } from "./ConnectWallet.type";
@@ -15,22 +15,13 @@ import ConnectWalletQrCode from "./ConnectWalletQrCode";
 import ConnectWalletSearch from "./ConnectWalletSearch";
 
 function ConnectWallet(props: ConnectWalletProps) {
-  const {
-    allRegistryButtons,
-    customConnectorButtons,
-    connectorVisibilityMap,
-    onBackClick,
-    handleExternalWalletClick,
-    handleWalletDetailsHeight,
-    disableBackButton,
-    isExternalWalletModeOnly,
-  } = props;
+  const { allRegistryButtons, customConnectorButtons, connectorVisibilityMap, handleWalletDetailsHeight, isExternalWalletModeOnly } = props;
 
-  const { bodyState, setBodyState } = useContext(RootContext);
+  const { bodyState, setBodyState } = useBodyState();
   const { analytics } = useContext(AnalyticsContext);
   const { deviceDetails, isDark, uiConfig } = useWidget();
   const { walletRegistry } = uiConfig;
-  const { modalState } = useModalState();
+  const { modalState, setModalState, handleShowExternalWallets, preHandleExternalWalletClick: handleExternalWalletClick } = useModalState();
   const { externalWalletsConfig: config, walletConnectUri, metamaskConnectUri } = modalState;
 
   const [currentPage, setCurrentPage] = useState(CONNECT_WALLET_PAGES.CONNECT_WALLET);
@@ -42,6 +33,17 @@ function ConnectWallet(props: ConnectWalletProps) {
   const [isShowAllWallets, setIsShowAllWallets] = useState<boolean>(false);
   // Track if user came directly from Login page with a pre-selected wallet
   const [isPreSelectedFromLogin, setIsPreSelectedFromLogin] = useState(false);
+
+  const onBackClick = useCallback(
+    (flag: boolean) => {
+      setModalState({
+        ...modalState,
+        currentPage: PAGES.LOGIN,
+      });
+      handleShowExternalWallets(flag);
+    },
+    [modalState, setModalState, handleShowExternalWallets]
+  );
 
   const handleBack = () => {
     if (!selectedWallet && currentPage === CONNECT_WALLET_PAGES.CONNECT_WALLET && onBackClick) {
@@ -64,6 +66,10 @@ function ConnectWallet(props: ConnectWalletProps) {
       handleWalletDetailsHeight();
     }
   };
+
+  const disableBackButton = useMemo(() => {
+    return bodyState.installLinks?.show || bodyState.multiChainSelector?.show;
+  }, [bodyState.installLinks?.show, bodyState.multiChainSelector?.show]);
 
   const walletDiscoverySupported = useMemo(() => {
     const supported = walletRegistry && (Object.keys(walletRegistry.default || {}).length > 0 || Object.keys(walletRegistry.others || {}).length > 0);

@@ -1,10 +1,22 @@
 import { AUTH_CONNECTION, AUTH_CONNECTION_TYPE } from "@web3auth/auth";
-import { cloneDeep, log, WALLET_CONNECTOR_TYPE, WALLET_CONNECTORS } from "@web3auth/no-modal";
+import { cloneDeep, CONNECTOR_NAMES, log, WALLET_CONNECTOR_TYPE, WALLET_CONNECTORS, WIDGET_TYPE } from "@web3auth/no-modal";
 import deepmerge from "deepmerge";
-import { createContext, type Dispatch, type FC, type ReactNode, type SetStateAction, useContext, useEffect, useMemo, useState } from "react";
+import {
+  createContext,
+  type Dispatch,
+  type FC,
+  type ReactNode,
+  type SetStateAction,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 import { PAGES } from "../constants";
-import { MODAL_STATUS, ModalState, StateEmitterEvents } from "../interfaces";
+import { type ExternalWalletEventType, MODAL_STATUS, ModalState, type SocialLoginEventType, StateEmitterEvents } from "../interfaces";
+import { useWidget } from "./WidgetContext";
 
 type StateListener = {
   on: <K extends keyof StateEmitterEvents>(event: K, listener: StateEmitterEvents[K]) => void;
@@ -14,6 +26,9 @@ type StateListener = {
 type ModalStateContextType = {
   modalState: ModalState;
   setModalState: Dispatch<SetStateAction<ModalState>>;
+  preHandleExternalWalletClick: (params: ExternalWalletEventType) => void;
+  preHandleSocialLoginClick: (params: SocialLoginEventType) => void;
+  handleShowExternalWallets: (flag: boolean) => void;
   areSocialLoginsVisible: boolean;
   isEmailPrimary: boolean;
   isExternalPrimary: boolean;
@@ -27,7 +42,6 @@ type ModalStateContextType = {
 type ModalStateProviderProps = {
   children: ReactNode;
   stateListener: StateListener;
-  initialVisibility?: boolean;
 };
 
 const initialModalState: ModalState = {
@@ -61,7 +75,11 @@ const initialModalState: ModalState = {
 
 const ModalStateContext = createContext<ModalStateContextType | undefined>(undefined);
 
-export const ModalStateProvider: FC<ModalStateProviderProps> = ({ children, stateListener, initialVisibility = false }) => {
+export const ModalStateProvider: FC<ModalStateProviderProps> = ({ children, stateListener }) => {
+  const { uiConfig, handleExternalWalletClick, handleSocialLoginClick, handleShowExternalWallets: onShowExternalWallets } = useWidget();
+
+  const initialVisibility = useMemo(() => uiConfig.widgetType === WIDGET_TYPE.EMBED, [uiConfig.widgetType]);
+
   const [modalState, setModalState] = useState<ModalState>({
     ...initialModalState,
     modalVisibility: initialVisibility,
@@ -123,6 +141,43 @@ export const ModalStateProvider: FC<ModalStateProviderProps> = ({ children, stat
     [modalState.hasExternalWallets, modalState.externalWalletsConfig]
   );
 
+  const preHandleExternalWalletClick = useCallback(
+    (params: ExternalWalletEventType) => {
+      const { connector } = params;
+      setModalState((prevState) => ({
+        ...prevState,
+        detailedLoaderConnector: connector,
+        detailedLoaderConnectorName: CONNECTOR_NAMES[connector as WALLET_CONNECTOR_TYPE],
+      }));
+      handleExternalWalletClick?.(params);
+    },
+    [handleExternalWalletClick]
+  );
+
+  const preHandleSocialLoginClick = useCallback(
+    (params: SocialLoginEventType) => {
+      const { loginParams } = params;
+      setModalState((prevState) => ({
+        ...prevState,
+        detailedLoaderConnector: loginParams.authConnection,
+        detailedLoaderConnectorName: loginParams.name,
+      }));
+      handleSocialLoginClick?.(params);
+    },
+    [handleSocialLoginClick]
+  );
+
+  const handleShowExternalWallets = useCallback(
+    (flag: boolean) => {
+      setModalState((prevState) => ({
+        ...prevState,
+        externalWalletsVisibility: flag,
+      }));
+      if (flag && onShowExternalWallets) onShowExternalWallets(modalState.externalWalletsInitialized);
+    },
+    [onShowExternalWallets, modalState.externalWalletsInitialized]
+  );
+
   // TODO: check if can further refactor this logic
   const shouldShowLoginPage = useMemo(
     () =>
@@ -135,6 +190,9 @@ export const ModalStateProvider: FC<ModalStateProviderProps> = ({ children, stat
     () => ({
       modalState,
       setModalState,
+      preHandleExternalWalletClick,
+      preHandleSocialLoginClick,
+      handleShowExternalWallets,
       areSocialLoginsVisible,
       isEmailPrimary,
       isExternalPrimary,
@@ -146,6 +204,9 @@ export const ModalStateProvider: FC<ModalStateProviderProps> = ({ children, stat
     }),
     [
       modalState,
+      preHandleExternalWalletClick,
+      preHandleSocialLoginClick,
+      handleShowExternalWallets,
       isEmailPrimary,
       isExternalPrimary,
       areSocialLoginsVisible,
