@@ -97,7 +97,7 @@ export interface LoginModalProps extends UIConfig {
 
 export interface LoginModalCallbacks {
   onInitExternalWallets: (params: { externalWalletsInitialized: boolean }) => Promise<void>;
-  onSocialLogin: (params: { connector: WALLET_CONNECTOR_TYPE; loginParams: ModalLoginParams }) => Promise<void>;
+  onSocialLogin: (params: { loginParams: ModalLoginParams }) => Promise<void>;
   onExternalWalletLogin: (params: {
     connector: WALLET_CONNECTOR_TYPE | string;
     loginParams: { chainNamespace: ChainNamespaceType };
@@ -112,7 +112,6 @@ export const LOGIN_MODAL_EVENTS = {
 export type SocialLoginsConfig = {
   loginMethodsOrder: string[];
   loginMethods: LoginMethodConfig;
-  connector: WALLET_CONNECTOR_TYPE;
   uiConfig: Omit<UIConfig, "connectorListener">;
 };
 
@@ -150,7 +149,7 @@ export interface ModalState {
   externalWalletsConfig: Record<string, BaseConnectorConfig>;
 }
 
-export type SocialLoginEventType = { connector: WALLET_CONNECTOR_TYPE; loginParams: ModalLoginParams };
+export type SocialLoginEventType = { loginParams: ModalLoginParams };
 export type ExternalWalletEventType = { connector: WALLET_CONNECTOR_TYPE | string; chainNamespace?: ChainNamespaceType };
 
 export type StateEmitterEvents = {
@@ -183,7 +182,6 @@ export type rowType = {
   isDark: boolean;
   isPrimaryBtn: boolean;
   name: string;
-  connector: SocialLoginsConfig["connector"];
   loginParams: {
     authConnection: AUTH_CONNECTION_TYPE;
     name: string;
