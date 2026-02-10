@@ -1,5 +1,6 @@
 import { WALLET_CONNECTORS, type WalletRegistryItem } from "@web3auth/no-modal";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { twMerge } from "tailwind-merge";
 
 import Footer from "../../components/Footer/Footer";
 import Loader from "../../components/Loader";
@@ -21,8 +22,26 @@ function RootContent(props: RootProps) {
   const { appLogo, deviceDetails, uiConfig, isConnectAndSignAuthenticationMode, handleMobileVerifyConnect } = useWidget();
   const { chainNamespaces, walletRegistry, privacyPolicy, tncLink, displayInstalledExternalWallets, hideSuccessScreen } = uiConfig;
 
-  const [isSocialLoginsExpanded, setIsSocialLoginsExpanded] = useState(false);
-  const [isWalletDetailsExpanded, setIsWalletDetailsExpanded] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [containerHeight, setContainerHeight] = useState(530);
+
+  useEffect(() => {
+    const el = contentRef.current;
+    if (!el) return;
+    const updateHeight = () => {
+      const elToMeasure = contentRef.current;
+      if (!elToMeasure) return;
+      const fullHeight = elToMeasure.scrollHeight;
+      if (fullHeight > 0) setContainerHeight(Math.ceil(fullHeight));
+    };
+    const observer = new ResizeObserver(() => {
+      requestAnimationFrame(updateHeight);
+    });
+    observer.observe(el);
+    // Run initial measurement after layout so scrollHeight includes full content (e.g. footer)
+    requestAnimationFrame(updateHeight);
+    return () => observer.disconnect();
+  }, []);
 
   // External Wallets
   const config = useMemo(() => modalState.externalWalletsConfig, [modalState.externalWalletsConfig]);
@@ -165,62 +184,6 @@ function RootContent(props: RootProps) {
     return !showPasswordLessInput && !areSocialLoginsVisible;
   }, [areSocialLoginsVisible, showPasswordLessInput]);
 
-  const handleSocialLoginHeight = () => {
-    setIsSocialLoginsExpanded((prev) => !prev);
-  };
-
-  const handleWalletDetailsHeight = () => {
-    setIsWalletDetailsExpanded((prev) => !prev);
-  };
-
-  const containerMaxHeight = useMemo(() => {
-    const isPrivacyPolicyOrTncLink = privacyPolicy || tncLink;
-
-    // Loader Screen
-    if (modalState.status !== MODAL_STATUS.INITIALIZED) {
-      return "530px";
-    }
-
-    // Wallet Details Screen
-    if (isWalletDetailsExpanded) {
-      return isPrivacyPolicyOrTncLink ? "680px" : "628px";
-    }
-
-    // Connect Wallet Screen
-    if (modalState.currentPage === PAGES.WALLET_LIST) {
-      return isPrivacyPolicyOrTncLink ? "640px" : "580px";
-    }
-
-    // Expanded Social Login Screen
-    if (isSocialLoginsExpanded) {
-      return isPrivacyPolicyOrTncLink ? "644px" : "588px";
-    }
-
-    // Only MetaMask
-    if (topInstalledConnectorButtons.length === 1) {
-      return isPrivacyPolicyOrTncLink ? "560px" : "530px";
-    }
-
-    // More than 1 connector
-    if (topInstalledConnectorButtons.length > 1) {
-      const maxHeight = 500 + (topInstalledConnectorButtons.length - 1) * 58;
-      if (isPrivacyPolicyOrTncLink) {
-        return `${maxHeight + 60}px`;
-      }
-      return `${maxHeight + 16}px`;
-    }
-    // Default
-    return "539px";
-  }, [
-    privacyPolicy,
-    tncLink,
-    modalState.status,
-    modalState.currentPage,
-    isWalletDetailsExpanded,
-    isSocialLoginsExpanded,
-    topInstalledConnectorButtons.length,
-  ]);
-
   const isShowLoader = useMemo(() => {
     return modalState.status !== MODAL_STATUS.INITIALIZED;
   }, [modalState.status]);
@@ -228,13 +191,13 @@ function RootContent(props: RootProps) {
   return (
     <div className="w3a--relative w3a--flex w3a--flex-col">
       <div
-        className="w3a--relative w3a--h-screen w3a--overflow-hidden w3a--transition-all w3a--duration-[400ms] w3a--ease-in-out"
+        className="w3a-modal-container w3a--relative w3a--flex w3a--flex-col w3a--overflow-hidden"
         style={{
-          maxHeight: containerMaxHeight,
+          height: containerHeight,
         }}
       >
         <div className="w3a--modal-curtain" />
-        <div className="w3a--relative w3a--flex w3a--h-full w3a--flex-1 w3a--flex-col w3a--p-6">
+        <div ref={contentRef} className={twMerge("w3a--relative w3a--flex w3a--flex-col w3a--p-6", isShowLoader ? "w3a--flex-1" : "w3a--flex-none")}>
           {/* Content */}
           {isShowLoader ? (
             <Loader
@@ -257,7 +220,6 @@ function RootContent(props: RootProps) {
                   installedExternalWalletConfig={topInstalledConnectorButtons}
                   totalExternalWallets={allExternalWallets.length}
                   remainingUndisplayedWallets={remainingUndisplayedWallets}
-                  handleSocialLoginHeight={handleSocialLoginHeight}
                 />
               )}
               {/* Connect Wallet Screen */}
@@ -268,7 +230,6 @@ function RootContent(props: RootProps) {
                     allRegistryButtons={allRegistryButtons}
                     connectorVisibilityMap={connectorVisibilityMap}
                     customConnectorButtons={customConnectorButtons}
-                    handleWalletDetailsHeight={handleWalletDetailsHeight}
                     isExternalWalletModeOnly={isExternalWalletModeOnly}
                   />
                 )}

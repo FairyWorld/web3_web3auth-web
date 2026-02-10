@@ -15,7 +15,7 @@ import ConnectWalletQrCode from "./ConnectWalletQrCode";
 import ConnectWalletSearch from "./ConnectWalletSearch";
 
 function ConnectWallet(props: ConnectWalletProps) {
-  const { allRegistryButtons, customConnectorButtons, connectorVisibilityMap, handleWalletDetailsHeight, isExternalWalletModeOnly } = props;
+  const { allRegistryButtons, customConnectorButtons, connectorVisibilityMap, isExternalWalletModeOnly } = props;
 
   const { bodyState, setBodyState } = useBodyState();
   const { analytics } = useContext(AnalyticsContext);
@@ -56,14 +56,12 @@ function ConnectWallet(props: ConnectWalletProps) {
       if (isPreSelectedFromLogin && onBackClick) {
         setSelectedWallet(false);
         setIsPreSelectedFromLogin(false);
-        handleWalletDetailsHeight(); // Reset modal height
         onBackClick(false);
         return;
       }
       // Otherwise, go back to wallet list
       setCurrentPage(CONNECT_WALLET_PAGES.CONNECT_WALLET);
       setSelectedWallet(false);
-      handleWalletDetailsHeight();
     }
   };
 
@@ -185,14 +183,13 @@ function ConnectWallet(props: ConnectWalletProps) {
       setSelectedWallet(true);
       setCurrentPage(CONNECT_WALLET_PAGES.SELECTED_WALLET);
       setIsPreSelectedFromLogin(true);
-      handleWalletDetailsHeight();
       // Clear pre-selected wallet after handling
       setBodyState((prev) => ({
         ...prev,
         preSelectedWallet: null,
       }));
     }
-  }, [bodyState.preSelectedWallet, handleWalletDetailsHeight, setBodyState]);
+  }, [bodyState.preSelectedWallet, setBodyState]);
 
   /**
    * Wallet click logic
@@ -226,7 +223,6 @@ function ConnectWallet(props: ConnectWalletProps) {
         setSelectedButton(button);
         setSelectedWallet(true);
         setCurrentPage(CONNECT_WALLET_PAGES.SELECTED_WALLET);
-        handleWalletDetailsHeight();
         return;
       }
 
@@ -251,7 +247,6 @@ function ConnectWallet(props: ConnectWalletProps) {
         setSelectedButton(button);
         setSelectedWallet(true);
         setCurrentPage(CONNECT_WALLET_PAGES.SELECTED_WALLET);
-        handleWalletDetailsHeight();
       } else {
         // otherwise, show install links
         setBodyState({
