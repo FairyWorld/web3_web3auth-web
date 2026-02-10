@@ -67,7 +67,6 @@ const initialModalState: ModalState = {
   socialLoginsConfig: {
     loginMethods: {},
     loginMethodsOrder: [],
-    connector: "" as WALLET_CONNECTOR_TYPE,
     uiConfig: {},
   },
   externalWalletsConfig: {},
