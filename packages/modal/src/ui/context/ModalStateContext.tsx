@@ -1,5 +1,5 @@
 import { AUTH_CONNECTION, AUTH_CONNECTION_TYPE } from "@web3auth/auth";
-import { cloneDeep, CONNECTOR_NAMES, log, WALLET_CONNECTOR_TYPE, WALLET_CONNECTORS } from "@web3auth/no-modal";
+import { cloneDeep, CONNECTOR_NAMES, log, WALLET_CONNECTOR_TYPE, WALLET_CONNECTORS, WIDGET_TYPE } from "@web3auth/no-modal";
 import deepmerge from "deepmerge";
 import {
   createContext,
@@ -16,6 +16,7 @@ import {
 
 import { PAGES } from "../constants";
 import { type ExternalWalletEventType, MODAL_STATUS, ModalState, type SocialLoginEventType, StateEmitterEvents } from "../interfaces";
+import { useWidget } from "./WidgetContext";
 
 type StateListener = {
   on: <K extends keyof StateEmitterEvents>(event: K, listener: StateEmitterEvents[K]) => void;
@@ -41,10 +42,6 @@ type ModalStateContextType = {
 type ModalStateProviderProps = {
   children: ReactNode;
   stateListener: StateListener;
-  initialVisibility?: boolean;
-  onExternalWalletClick?: (params: ExternalWalletEventType) => void;
-  onSocialLoginClick?: (params: SocialLoginEventType) => void;
-  onShowExternalWallets?: (externalWalletsInitialized: boolean) => void;
 };
 
 const initialModalState: ModalState = {
@@ -78,14 +75,11 @@ const initialModalState: ModalState = {
 
 const ModalStateContext = createContext<ModalStateContextType | undefined>(undefined);
 
-export const ModalStateProvider: FC<ModalStateProviderProps> = ({
-  children,
-  stateListener,
-  initialVisibility = false,
-  onExternalWalletClick,
-  onSocialLoginClick,
-  onShowExternalWallets,
-}) => {
+export const ModalStateProvider: FC<ModalStateProviderProps> = ({ children, stateListener }) => {
+  const { uiConfig, handleExternalWalletClick, handleSocialLoginClick, handleShowExternalWallets: onShowExternalWallets } = useWidget();
+
+  const initialVisibility = useMemo(() => uiConfig.widgetType === WIDGET_TYPE.EMBED, [uiConfig.widgetType]);
+
   const [modalState, setModalState] = useState<ModalState>({
     ...initialModalState,
     modalVisibility: initialVisibility,
@@ -155,9 +149,9 @@ export const ModalStateProvider: FC<ModalStateProviderProps> = ({
         detailedLoaderConnector: connector,
         detailedLoaderConnectorName: CONNECTOR_NAMES[connector as WALLET_CONNECTOR_TYPE],
       }));
-      onExternalWalletClick?.(params);
+      handleExternalWalletClick?.(params);
     },
-    [onExternalWalletClick]
+    [handleExternalWalletClick]
   );
 
   const preHandleSocialLoginClick = useCallback(
@@ -168,9 +162,9 @@ export const ModalStateProvider: FC<ModalStateProviderProps> = ({
         detailedLoaderConnector: loginParams.authConnection,
         detailedLoaderConnectorName: loginParams.name,
       }));
-      onSocialLoginClick?.(params);
+      handleSocialLoginClick?.(params);
     },
-    [onSocialLoginClick]
+    [handleSocialLoginClick]
   );
 
   const handleShowExternalWallets = useCallback(

@@ -11,7 +11,7 @@ import Root from "../Root";
 import { WidgetProps } from "./Widget.type";
 
 function WidgetContent() {
-  const { uiConfig, handleExternalWalletClick, handleMobileVerifyConnect, closeModal, isConnectAndSignAuthenticationMode } = useWidget();
+  const { uiConfig, handleExternalWalletClick, closeModal, isConnectAndSignAuthenticationMode } = useWidget();
 
   const { modalState, setModalState } = useModalState();
 
@@ -72,7 +72,7 @@ function WidgetContent() {
     }
   }, [modalState, handleExternalWalletClick]);
 
-  const rootElement = <Root onCloseLoader={onCloseLoader} handleMobileVerifyConnect={handleMobileVerifyConnect} />;
+  const rootElement = <Root onCloseLoader={onCloseLoader} />;
 
   if (widgetType === WIDGET_TYPE.MODAL) {
     return (
@@ -100,19 +100,9 @@ function WidgetContent() {
 
 function Widget(props: WidgetProps) {
   const { stateListener } = props;
-  const { uiConfig, handleExternalWalletClick, handleShowExternalWallets, handleSocialLoginClick } = useWidget();
-  const { widgetType } = uiConfig;
-
-  const initialVisibility = useMemo(() => widgetType === WIDGET_TYPE.EMBED, [widgetType]);
 
   return (
-    <ModalStateProvider
-      stateListener={stateListener}
-      initialVisibility={initialVisibility}
-      onExternalWalletClick={handleExternalWalletClick}
-      onSocialLoginClick={handleSocialLoginClick}
-      onShowExternalWallets={handleShowExternalWallets}
-    >
+    <ModalStateProvider stateListener={stateListener}>
       <WidgetContent />
     </ModalStateProvider>
   );

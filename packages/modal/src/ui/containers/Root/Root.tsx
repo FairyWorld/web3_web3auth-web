@@ -15,10 +15,10 @@ import { RootProps } from "./Root.type";
 import RootBodySheets from "./RootBodySheets/RootBodySheets";
 
 function RootContent(props: RootProps) {
-  const { handleMobileVerifyConnect, onCloseLoader } = props;
+  const { onCloseLoader } = props;
 
   const { modalState, preHandleExternalWalletClick, shouldShowLoginPage, showPasswordLessInput, areSocialLoginsVisible } = useModalState();
-  const { appLogo, deviceDetails, uiConfig, isConnectAndSignAuthenticationMode } = useWidget();
+  const { appLogo, deviceDetails, uiConfig, isConnectAndSignAuthenticationMode, handleMobileVerifyConnect } = useWidget();
   const { chainNamespaces, walletRegistry, privacyPolicy, tncLink, displayInstalledExternalWallets, hideSuccessScreen } = uiConfig;
 
   const { bodyState } = useRoot();
