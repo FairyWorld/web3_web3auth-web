@@ -42,7 +42,7 @@ const Main = () => {
     }
 
     await connectTo(WALLET_CONNECTORS.AUTH, {
-      authConnection: "goggle",
+      authConnection: "custom",
       authConnectionId: "w3-sfa-web-google-devnet",
       idToken: idToken,
       extraLoginOptions: {
