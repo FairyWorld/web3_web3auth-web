@@ -381,10 +381,10 @@ function Login(props: LoginProps) {
   };
 
   const installedExternalWallets = useMemo(() => {
-    if (showInstalledExternalWallets) return installedExternalWalletConfig;
+    if (showInstalledExternalWallets || remainingUndisplayedWallets <= 1) return installedExternalWalletConfig;
     // always show MetaMask
     return installedExternalWalletConfig.filter((wallet) => wallet.name === WALLET_CONNECTORS.METAMASK);
-  }, [installedExternalWalletConfig, showInstalledExternalWallets]);
+  }, [installedExternalWalletConfig, showInstalledExternalWallets, remainingUndisplayedWallets]);
 
   const handleConnectWallet = useCallback(
     (e?: ReactMouseEvent<HTMLButtonElement>) => {
@@ -507,7 +507,7 @@ function Login(props: LoginProps) {
           ))}
 
         {/* EXTERNAL WALLETS DISCOVERY */}
-        {remainingUndisplayedWallets > 0 && (
+        {remainingUndisplayedWallets > 1 && (
           <button
             type="button"
             className={cn("w3a--btn wta:justify-between! wta:group wta:relative wta:overflow-hidden", {
