@@ -167,15 +167,6 @@ function RootContent(props: RootProps) {
     return installedConnectorButtons.filter((button) => !button.hasInjectedWallet);
   }, [installedConnectorButtons]);
 
-  const topInstalledConnectorButtons = useMemo(() => {
-    const MAX_TOP_INSTALLED_CONNECTORS = 3;
-
-    // make metamask the first button and limit the number of buttons
-    return installedConnectorButtons
-      .sort((a, _) => (a.name === WALLET_CONNECTORS.METAMASK ? -1 : 1))
-      .slice(0, displayInstalledExternalWallets ? MAX_TOP_INSTALLED_CONNECTORS : 1);
-  }, [installedConnectorButtons, displayInstalledExternalWallets]);
-
   const allExternalWallets = useMemo(() => {
     const uniqueButtonSet = new Set();
     return installedConnectorButtons.concat(allRegistryButtons).filter((button) => {
@@ -184,6 +175,21 @@ function RootContent(props: RootProps) {
       return true;
     });
   }, [allRegistryButtons, installedConnectorButtons]);
+
+  const topInstalledConnectorButtons = useMemo(() => {
+    const MAX_TOP_INSTALLED_CONNECTORS = 3;
+
+    // make metamask the first button and limit the number of buttons
+    const sortedButtons = [...installedConnectorButtons].sort((a, _) => (a.name === WALLET_CONNECTORS.METAMASK ? -1 : 1));
+
+    let maxToShow = displayInstalledExternalWallets ? MAX_TOP_INSTALLED_CONNECTORS : 1;
+    // avoid hiding a single installed wallet behind the "All Wallets" button: if collapsing
+    // would leave exactly one wallet undisplayed and it's an installed connector, surface it inline
+    if (sortedButtons.length > maxToShow && allExternalWallets.length - maxToShow === 1) {
+      maxToShow += 1;
+    }
+    return sortedButtons.slice(0, maxToShow);
+  }, [installedConnectorButtons, displayInstalledExternalWallets, allExternalWallets]);
 
   const remainingUndisplayedWallets = useMemo(() => {
     return allExternalWallets.filter((button) => {
