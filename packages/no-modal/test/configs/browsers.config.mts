@@ -34,6 +34,8 @@ const noModalOptimizeDepsInclude = [
   "@metamask/connect-evm",
   "@metamask/connect-multichain",
   "@metamask/connect-solana",
+  "@base-org/account",
+  "@coinbase/wallet-sdk",
   "@solana/client",
   "@solana/kit",
   "@solana/react-hooks",
