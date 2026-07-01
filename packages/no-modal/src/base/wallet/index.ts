@@ -14,6 +14,7 @@ export const SOLANA_CONNECTORS = {
 
 export const EVM_CONNECTORS = {
   COINBASE: "coinbase",
+  BASE_ACCOUNT: "base-account",
   ...MULTI_CHAIN_CONNECTORS,
 } as const;
 
@@ -31,6 +32,7 @@ export const CONNECTOR_NAMES = {
   [MULTI_CHAIN_CONNECTORS.AUTH]: "Auth",
   [MULTI_CHAIN_CONNECTORS.WALLET_CONNECT_V2]: "Wallet Connect v2",
   [EVM_CONNECTORS.COINBASE]: "Coinbase Smart Wallet",
+  [EVM_CONNECTORS.BASE_ACCOUNT]: "Base Account",
   [EVM_CONNECTORS.METAMASK]: "MetaMask",
 };
 

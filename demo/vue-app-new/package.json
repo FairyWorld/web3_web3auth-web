@@ -11,6 +11,7 @@
     "lint": "eslint --ext .js,.vue,.ts --ignore-path .gitignore --fix src"
   },
   "dependencies": {
+    "@base-org/account": "^2.5.1",
     "@solana-program/system": "^0.12.2",
     "@solana/kit": "^6.9.0",
     "@tanstack/vue-query": "^5.100.14",

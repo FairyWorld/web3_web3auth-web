@@ -29,6 +29,8 @@ export const baseConfig = {
     "./src/vue/wagmi/index.ts",
 
     // re-exports from no-modal sdk.
+    "./src/connectors/index.ts",
+    "./src/connectors/base-account-connector/index.ts",
     "./src/connectors/coinbase-connector/index.ts",
     "./src/providers/xrpl-provider/index.ts",
   ],

@@ -57,7 +57,12 @@ const aaSupportedChains = computed(() => {
 });
 
 const connectorOptions = computed(() =>
-  formData.chainNamespaces.includes(CHAIN_NAMESPACES.EIP155) ? [{ name: "coinbase-connector", value: "coinbase" }] : []
+  formData.chainNamespaces.includes(CHAIN_NAMESPACES.EIP155)
+    ? [
+        { name: "coinbase-connector", value: "coinbase" },
+        { name: "base-account-connector", value: "base-account" },
+      ]
+    : []
 );
 
 const isDisplay = (_name: string): boolean => {

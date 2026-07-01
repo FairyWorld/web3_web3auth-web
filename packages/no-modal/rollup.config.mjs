@@ -21,6 +21,7 @@ export const baseConfig = {
     "./src/react/solana/index.ts",
     "./src/vue/solana/index.ts",
     "./src/vue/wagmi/index.ts",
+    "./src/connectors/base-account-connector/index.ts",
     "./src/connectors/coinbase-connector/index.ts",
     "./src/providers/xrpl-provider/index.ts",
   ],

@@ -17,7 +17,7 @@ import {
 import { type Web3AuthContextConfig, Web3AuthProvider } from "@web3auth/modal/vue";
 import { SolanaProvider } from "@web3auth/modal/vue/solana";
 import { WagmiProvider } from "@web3auth/modal/vue/wagmi";
-import { coinbaseConnector } from "@web3auth/no-modal/connectors/coinbase-connector";
+import { baseAccountConnector, coinbaseConnector } from "@web3auth/modal/connectors";
 import { computed, onBeforeMount, ref, watch } from "vue";
 
 import { CookieStorage, LocalStorageAdapter, log, MemoryStorage, SessionStorageAdapter, WEB3AUTH_NETWORK, type StorageConfig } from "@web3auth/auth";
@@ -226,6 +226,8 @@ const getExternalAdapterByName = (name: string): ConnectorFn[] => {
   switch (name) {
     case "coinbase":
       return [coinbaseConnector()];
+    case "base-account":
+      return [baseAccountConnector()];
     default:
       return [];
   }
@@ -280,11 +282,12 @@ watch(
   () => formData.connectors,
   async () => {
     let connectors: ConnectorFn[] = [];
-    for (let i = 0; i <= formData.connectors.length; i += 1) {
+    for (let i = 0; i < formData.connectors.length; i += 1) {
       connectors = connectors.concat(getExternalAdapterByName(formData.connectors[i]));
     }
     externalConnectors.value = connectors;
-  }
+  },
+  { immediate: true }
 );
 
 const configs = computed<Web3AuthContextConfig>(() => {

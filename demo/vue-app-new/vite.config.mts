@@ -18,6 +18,9 @@ export default defineConfig(({ mode }) => {
       host: true,
     },
     plugins: [vue(), tailwindcss()],
+    optimizeDeps: {
+      include: ["@base-org/account", "@coinbase/wallet-sdk"],
+    },
     resolve: {
       alias: {
         "@": "/src",
