@@ -1,4 +1,5 @@
 import type { AppMetadata, Preference } from "@base-org/account";
+import { JsonRpcError } from "@web3auth/auth";
 
 import {
   BaseConnectorLoginParams,
@@ -33,17 +34,6 @@ export interface BaseAccountConnectorOptions extends BaseConnectorSettings {
   connectorSettings?: BaseAccountSDKOptions;
 }
 
-interface BaseAccountProvider {
-  request<T>(args: { method: string; params?: unknown[] }): Promise<T>;
-  on(event: string, listener: (...args: unknown[]) => void): void;
-  once(event: string, listener: (...args: unknown[]) => void): void;
-  removeAllListeners(): void;
-}
-
-interface ProviderRpcError extends Error {
-  code: number;
-}
-
 class BaseAccountConnector extends BaseEvmConnector<void> {
   readonly connectorNamespace: ConnectorNamespaceType = CONNECTOR_NAMESPACES.EIP155;
 
@@ -55,7 +45,7 @@ class BaseAccountConnector extends BaseEvmConnector<void> {
 
   public status: CONNECTOR_STATUS_TYPE = CONNECTOR_STATUS.NOT_READY;
 
-  private baseAccountProvider: BaseAccountProvider | null = null;
+  private baseAccountProvider: IProvider | null = null;
 
   private baseAccountOptions: BaseAccountSDKOptions = { appName: "Web3Auth" };
 
@@ -66,7 +56,7 @@ class BaseAccountConnector extends BaseEvmConnector<void> {
 
   get provider(): IProvider | null {
     if (this.status !== CONNECTOR_STATUS.NOT_READY && this.baseAccountProvider) {
-      return this.baseAccountProvider as unknown as IProvider;
+      return this.baseAccountProvider;
     }
     return null;
   }
@@ -105,7 +95,7 @@ class BaseAccountConnector extends BaseEvmConnector<void> {
       appChainIds: this.baseAccountOptions.appChainIds || appChainIds,
     });
 
-    this.baseAccountProvider = sdk.getProvider() as unknown as BaseAccountProvider;
+    this.baseAccountProvider = sdk.getProvider() as unknown as IProvider;
     this.status = CONNECTOR_STATUS.READY;
     this.emit(CONNECTOR_EVENTS.READY, WALLET_CONNECTORS.BASE_ACCOUNT);
 
@@ -135,7 +125,7 @@ class BaseAccountConnector extends BaseEvmConnector<void> {
       if (!chainConfig) throw WalletLoginError.connectionError("Chain config is not available");
 
       await this.baseAccountProvider.request({ method: "eth_requestAccounts" });
-      const currentChainId = await this.baseAccountProvider.request<string>({ method: "eth_chainId" });
+      const currentChainId = (await this.baseAccountProvider.request({ method: "eth_chainId" })) as string;
 
       if (currentChainId !== chainConfig.chainId) {
         await this.switchChain(chainConfig, true);
@@ -155,9 +145,7 @@ class BaseAccountConnector extends BaseEvmConnector<void> {
         solanaWallet: null,
       } as CONNECTED_EVENT_DATA);
 
-      if (getAuthTokenInfo) {
-        await this.getAuthTokenInfo();
-      }
+      await this.authorizeOrDisconnect(getAuthTokenInfo);
 
       return {
         ethereumProvider: this.provider,
@@ -196,7 +184,7 @@ class BaseAccountConnector extends BaseEvmConnector<void> {
     try {
       await this.baseAccountProvider?.request({ method: "wallet_switchEthereumChain", params: [{ chainId: params.chainId }] });
     } catch (switchError: unknown) {
-      if ((switchError as ProviderRpcError).code === 4902) {
+      if ((switchError as JsonRpcError<undefined>).code === 4902) {
         const chainConfig = this.coreOptions.chains.find((x) => x.chainId === params.chainId);
         if (!chainConfig) throw WalletLoginError.connectionError("Chain config is not available");
         await this.baseAccountProvider?.request({
