@@ -143,6 +143,7 @@ class BaseAccountConnector extends BaseEvmConnector<void> {
         reconnected: this.rehydrated,
         ethereumProvider: this.provider,
         solanaWallet: null,
+        connectorNamespace: this.connectorNamespace,
       } as CONNECTED_EVENT_DATA);
 
       await this.authorizeOrDisconnect(getAuthTokenInfo);
