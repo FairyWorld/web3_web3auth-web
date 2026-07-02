@@ -31,6 +31,9 @@
     "pre-commit": "lint-staged --cwd ."
   },
   "peerDependenciesMeta": {
+    "@base-org/account": {
+      "optional": true
+    },
     "@coinbase/wallet-sdk": {
       "optional": true
     },
@@ -43,6 +46,7 @@
   },
   "peerDependencies": {
     "@babel/runtime": "^7.x",
+    "@base-org/account": "^2.5.1",
     "@coinbase/wallet-sdk": "^4.3.x",
     "@solana/client": "^1.7.0",
     "@solana/kit": ">=6.5.0",
@@ -173,6 +177,16 @@
       "require": "./dist/lib.cjs/packages/modal/src/vue/wagmi/index.js",
       "types": "./dist/lib.cjs/types/vue/wagmi/index.d.ts"
     },
+    "./connectors": {
+      "import": "./dist/lib.esm/packages/modal/src/connectors/index.js",
+      "require": "./dist/lib.cjs/packages/modal/src/connectors/index.js",
+      "types": "./dist/lib.cjs/types/connectors/index.d.ts"
+    },
+    "./connectors/base-account-connector": {
+      "import": "./dist/lib.esm/packages/modal/src/connectors/base-account-connector/index.js",
+      "require": "./dist/lib.cjs/packages/modal/src/connectors/base-account-connector/index.js",
+      "types": "./dist/lib.cjs/types/connectors/base-account-connector/index.d.ts"
+    },
     "./connectors/coinbase-connector": {
       "import": "./dist/lib.esm/packages/modal/src/connectors/coinbase-connector/index.js",
       "require": "./dist/lib.cjs/packages/modal/src/connectors/coinbase-connector/index.js",
@@ -221,6 +235,12 @@
       ],
       "vue/wagmi": [
         "./dist/lib.cjs/types/vue/wagmi/index.d.ts"
+      ],
+      "connectors": [
+        "./dist/lib.cjs/types/connectors/index.d.ts"
+      ],
+      "connectors/base-account-connector": [
+        "./dist/lib.cjs/types/connectors/base-account-connector/index.d.ts"
       ],
       "connectors/coinbase-connector": [
         "./dist/lib.cjs/types/connectors/coinbase-connector/index.d.ts"

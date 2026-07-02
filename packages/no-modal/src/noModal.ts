@@ -1922,7 +1922,12 @@ export class Web3AuthNoModal extends SafeEventEmitter<Web3AuthNoModalEvents> imp
       accountAbstractionConfig?.chains?.some((chain) => chain.chainId === this.currentChain?.chainId);
 
     // setup AA provider if AA is enabled (skip for EIP-7702; 7702 uses EOA + 5792/7702 RPC only)
-    if (!is7702 && isAaSupportedForCurrentChain && (connectorName === WALLET_CONNECTORS.AUTH || this.coreOptions.useAAWithExternalWallet)) {
+    // Skip AA wrapping for Base Account as it's already a smart account provider
+    if (
+      !is7702 &&
+      isAaSupportedForCurrentChain &&
+      (connectorName === WALLET_CONNECTORS.AUTH || (this.coreOptions.useAAWithExternalWallet && connectorName !== WALLET_CONNECTORS.BASE_ACCOUNT))
+    ) {
       const { accountAbstractionProvider, toEoaProvider } = await import("./providers/account-abstraction-provider");
       const eoaProvider: IProvider = connectorName === WALLET_CONNECTORS.AUTH ? await toEoaProvider(baseEthereumProvider) : baseEthereumProvider;
       const aaChainIds = new Set(accountAbstractionConfig?.chains?.map((chain) => chain.chainId) || []);

@@ -209,6 +209,7 @@ export type LoginParamMap = {
   [WALLET_CONNECTORS.AUTH]: Partial<AuthLoginParams>;
   [WALLET_CONNECTORS.METAMASK]: { chainNamespace: ChainNamespaceType };
   [WALLET_CONNECTORS.COINBASE]: { chainNamespace: ChainNamespaceType };
+  [WALLET_CONNECTORS.BASE_ACCOUNT]: { chainNamespace: ChainNamespaceType };
   [WALLET_CONNECTORS.WALLET_CONNECT_V2]: { chainNamespace: ChainNamespaceType };
 };
 

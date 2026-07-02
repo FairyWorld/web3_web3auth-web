@@ -29,6 +29,9 @@ const modalOptimizeDepsInclude = [
   "react-i18next",
   "react-qrcode-logo",
   "tailwind-merge",
+  "vue",
+  "@base-org/account",
+  "@coinbase/wallet-sdk",
 ];
 
 export default defineConfig({
@@ -38,6 +41,9 @@ export default defineConfig({
   },
   optimizeDeps: {
     include: modalOptimizeDepsInclude,
+  },
+  resolve: {
+    dedupe: ["react", "react-dom"],
   },
   define: {
     "process.env.VITE_APP_INFURA_PROJECT_KEY": JSON.stringify(viteEnv.VITE_APP_INFURA_PROJECT_KEY ?? ""),

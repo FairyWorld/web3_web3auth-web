@@ -32,6 +32,7 @@
   ],
   "peerDependencies": {
     "@babel/runtime": "^7.x",
+    "@base-org/account": "^2.5.1",
     "@coinbase/wallet-sdk": "^4.3.x",
     "@solana/react-hooks": "^1.4.0",
     "@x402/evm": "^2.7.0",
@@ -42,6 +43,9 @@
     "vue": "^3.x"
   },
   "peerDependenciesMeta": {
+    "@base-org/account": {
+      "optional": true
+    },
     "@coinbase/wallet-sdk": {
       "optional": true
     },
@@ -99,6 +103,7 @@
     "xrpl": "^2.14.0"
   },
   "devDependencies": {
+    "@base-org/account": "^2.5.6",
     "@coinbase/wallet-sdk": "^4.3.7",
     "@solana/react-hooks": "^1.4.1",
     "@types/react": "^19.2.16",
@@ -178,6 +183,11 @@
       "require": "./dist/lib.cjs/vue/wagmi/index.js",
       "types": "./dist/lib.cjs/types/vue/wagmi/index.d.ts"
     },
+    "./connectors/base-account-connector": {
+      "import": "./dist/lib.esm/connectors/base-account-connector/index.js",
+      "require": "./dist/lib.cjs/connectors/base-account-connector/index.js",
+      "types": "./dist/lib.cjs/types/connectors/base-account-connector/index.d.ts"
+    },
     "./connectors/coinbase-connector": {
       "import": "./dist/lib.esm/connectors/coinbase-connector/index.js",
       "require": "./dist/lib.cjs/connectors/coinbase-connector/index.js",
@@ -223,6 +233,9 @@
       ],
       "vue/solana": [
         "./dist/lib.cjs/types/vue/solana/index.d.ts"
+      ],
+      "connectors/base-account-connector": [
+        "./dist/lib.cjs/types/connectors/base-account-connector/index.d.ts"
       ],
       "connectors/coinbase-connector": [
         "./dist/lib.cjs/types/connectors/coinbase-connector/index.d.ts"
