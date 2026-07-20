@@ -21,26 +21,44 @@ function Modal(props: ModalProps) {
     borderRadius = "large",
   } = props;
 
+  const ANIMATION_DURATION_MS = 500;
+
+  const [isMounted, setIsMounted] = useState<boolean>(open);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
+  // Preserve the last non-empty children so the content stays visible while the
+  // modal animates out, since the parent unmounts the content the moment it closes.
+  const [renderedChildren, setRenderedChildren] = useState(children);
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional: freeze content for the exit animation
+    if (children) setRenderedChildren(children);
+  }, [children]);
+
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
     if (open) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional
+      setIsMounted(true);
       document.body.style.overflow = "hidden";
-      // Give a very small delay for the animation to start from the correct position
-      setTimeout(() => {
+      // Give a very small delay for the enter animation to start from the closed position
+      timer = setTimeout(() => {
         setIsOpen(true);
       }, 50);
     } else {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional
       setIsOpen(false);
       // Remove overflow styling to enable scroll again.
       document.body.style.overflow = "";
+      // Keep the modal mounted until the slide-down/fade-out finishes.
+      timer = setTimeout(() => {
+        setIsMounted(false);
+      }, ANIMATION_DURATION_MS);
     }
+    return () => clearTimeout(timer);
   }, [open]);
 
   const positions: Record<string, string> = useMemo(
     () => ({
-      center: "wta:top-0 wta:left-0 wta:items-center wta:justify-center",
+      center: "wta:top-0 wta:left-0 wta:items-end wta:justify-center wta:sm:items-center",
       "top-center": "wta:top-8 wta:left-0 wta:items-start wta:justify-center",
       "bottom-center": "wta:bottom-8 wta:left-0 wta:items-end wta:justify-center",
       left: "wta:sm:left-8 wta:flex wta:items-center wta:justify-center wta:sm:justify-start",
@@ -55,24 +73,21 @@ function Modal(props: ModalProps) {
     if (onClose) onClose();
   };
 
+  if (!isMounted) return null;
+
   return (
-    <div
-      className={cn("wta:fixed wta:z-50 wta:overflow-hidden wta:flex wta:transition-all", placementClass, {
-        "wta:w-screen wta:h-screen": isOpen,
-        "wta:w-0 wta:h-0 wta:delay-500": !isOpen,
-      })}
-    >
+    <div className={cn("wta:fixed wta:z-50 wta:flex wta:w-screen wta:h-screen wta:overflow-hidden", placementClass)}>
       <div
         className={cn(
-          "wta:bg-app-light-surface1 wta:dark:bg-app-dark-surface-main wta:w-[356px] wta:[@media(min-width:375px)]:w-[393px] wta:h-auto wta:flex wta:flex-col wta:duration-500",
+          "wta:bg-app-light-surface1 wta:dark:bg-app-dark-surface-main wta:w-full wta:sm:w-[356px] wta:[@media(min-width:375px)]:sm:w-[393px] wta:h-auto wta:flex wta:flex-col wta:transition wta:duration-500 wta:ease-out",
           {
-            "wta:translate-y-0 wta:delay-100": isOpen,
-            "wta:translate-y-[100vh]": !isOpen,
+            "wta:translate-y-0 wta:opacity-100": isOpen,
+            "wta:translate-y-full wta:opacity-0": !isOpen,
             "wta:p-4": padding,
             "wta:shadow-xl wta:sm:shadow-lg": shadow,
             "wta:border wta:border-app-gray-100 wta:dark:border-app-gray-800": border,
-            "wta:rounded-[30px]": borderRadius === "large",
-            "wta:rounded-2xl": borderRadius === "medium",
+            "wta:rounded-t-[30px] wta:sm:rounded-[30px]": borderRadius === "large",
+            "wta:rounded-t-2xl wta:sm:rounded-2xl": borderRadius === "medium",
             "wta:rounded-none": borderRadius === "small",
           }
         )}
@@ -97,7 +112,7 @@ function Modal(props: ModalProps) {
             </svg>
           </div>
         )}
-        {children}
+        {renderedChildren}
       </div>
     </div>
   );
