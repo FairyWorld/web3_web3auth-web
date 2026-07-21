@@ -58,7 +58,7 @@ function Modal(props: ModalProps) {
 
   const positions: Record<string, string> = useMemo(
     () => ({
-      center: "wta:top-0 wta:left-0 wta:items-end wta:justify-center wta:sm:items-center",
+      center: "wta:top-0 wta:left-0 wta:items-end wta:justify-center wta:xs:items-center",
       "top-center": "wta:top-8 wta:left-0 wta:items-start wta:justify-center",
       "bottom-center": "wta:bottom-8 wta:left-0 wta:items-end wta:justify-center",
       left: "wta:sm:left-8 wta:flex wta:items-center wta:justify-center wta:sm:justify-start",
@@ -79,15 +79,15 @@ function Modal(props: ModalProps) {
     <div className={cn("wta:fixed wta:z-50 wta:flex wta:w-screen wta:h-screen wta:overflow-hidden", placementClass)}>
       <div
         className={cn(
-          "wta:bg-app-light-surface1 wta:dark:bg-app-dark-surface-main wta:w-full wta:sm:w-[356px] wta:[@media(min-width:375px)]:sm:w-[393px] wta:h-auto wta:flex wta:flex-col wta:transition wta:duration-500 wta:ease-out",
+          "wta:bg-app-light-surface1 wta:dark:bg-app-dark-surface-main wta:w-full wta:xs:w-[393px] wta:h-auto wta:flex wta:flex-col wta:transition wta:duration-500 wta:ease-out",
           {
             "wta:translate-y-0 wta:opacity-100": isOpen,
             "wta:translate-y-full wta:opacity-0": !isOpen,
             "wta:p-4": padding,
-            "wta:shadow-xl wta:sm:shadow-lg": shadow,
+            "wta:shadow-xl wta:xs:shadow-lg": shadow,
             "wta:border wta:border-app-gray-100 wta:dark:border-app-gray-800": border,
-            "wta:rounded-t-[30px] wta:sm:rounded-[30px]": borderRadius === "large",
-            "wta:rounded-t-2xl wta:sm:rounded-2xl": borderRadius === "medium",
+            "wta:rounded-t-[30px] wta:xs:rounded-[30px]": borderRadius === "large",
+            "wta:rounded-t-2xl wta:xs:rounded-2xl": borderRadius === "medium",
             "wta:rounded-none": borderRadius === "small",
           }
         )}
