@@ -188,10 +188,8 @@ export const ModalStateProvider: FC<ModalStateProviderProps> = ({ children, stat
 
   // TODO: check if can further refactor this logic
   const shouldShowLoginPage = useMemo(
-    () =>
-      (areSocialLoginsVisible || showPasswordLessInput || !!modalState.externalWalletsConfig[WALLET_CONNECTORS.METAMASK]) &&
-      !modalState.externalWalletsVisibility,
-    [areSocialLoginsVisible, showPasswordLessInput, modalState.externalWalletsVisibility, modalState.externalWalletsConfig]
+    () => (areSocialLoginsVisible || showPasswordLessInput || showExternalWalletButton) && !modalState.externalWalletsVisibility,
+    [areSocialLoginsVisible, showPasswordLessInput, showExternalWalletButton, modalState.externalWalletsVisibility]
   );
 
   const value = useMemo(

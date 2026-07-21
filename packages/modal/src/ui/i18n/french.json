@@ -25,7 +25,7 @@
     "errors-invalid-number": "Numéro de téléphone invalide",
     "errors-invalid-number-email": "Adresse e-mail ou numéro de téléphone invalide",
     "errors-required": "Champ obligatoire",
-    "external.all-wallets": "Toutes les billeteras",
+    "external.all-wallets": "Autres portefeuilles",
     "external.back": "Retour",
     "external.connect": "Continuer avec un portefeuille",
     "external.connect-wallet": "Connecter le portefeuille",

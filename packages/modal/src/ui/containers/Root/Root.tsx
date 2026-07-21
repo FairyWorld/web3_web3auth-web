@@ -268,7 +268,6 @@ function RootContent(props: RootProps) {
                     allRegistryButtons={allRegistryButtons}
                     connectorVisibilityMap={connectorVisibilityMap}
                     customConnectorButtons={customConnectorButtons}
-                    isExternalWalletModeOnly={isExternalWalletModeOnly}
                   />
                 )}
             </>
