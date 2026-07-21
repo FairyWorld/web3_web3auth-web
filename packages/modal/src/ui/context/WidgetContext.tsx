@@ -1,5 +1,5 @@
 import { CONNECTOR_INITIAL_AUTHENTICATION_MODE, WALLET_CONNECTOR_TYPE } from "@web3auth/no-modal";
-import { createContext, type FC, type ReactNode, useContext, useMemo } from "react";
+import { createContext, type FC, type ReactNode, useContext, useEffect, useMemo, useState } from "react";
 
 import { browser, ExternalWalletEventType, LoginModalProps, os, platform, SocialLoginEventType } from "../interfaces";
 
@@ -38,7 +38,7 @@ const WidgetContext = createContext<WidgetContextType | undefined>(undefined);
 
 export const WidgetProvider: FC<WidgetProviderProps> = ({
   children,
-  isDark = true,
+  isDark: isDarkProp = true,
   deviceDetails,
   uiConfig,
   handleSocialLoginClick,
@@ -50,6 +50,32 @@ export const WidgetProvider: FC<WidgetProviderProps> = ({
   handleChangeWallet,
   closeModal,
 }) => {
+  const [isDark, setIsDark] = useState(() => {
+    if (uiConfig.mode === "auto" && typeof window !== "undefined" && typeof window.matchMedia === "function") {
+      return window.matchMedia("(prefers-color-scheme: dark)").matches;
+    }
+    return isDarkProp;
+  });
+
+  // When mode is "auto", follow live OS color-scheme changes so the modal re-themes without reopening.
+  useEffect(() => {
+    if (uiConfig.mode !== "auto" || typeof window === "undefined" || typeof window.matchMedia !== "function") {
+      return undefined;
+    }
+
+    const mql = window.matchMedia("(prefers-color-scheme: dark)");
+    const applyPreference = () => {
+      setIsDark(mql.matches);
+      // Keep the CSS `dark` variant in sync with the React context value.
+      document.getElementById("w3a-parent-container")?.classList.toggle("w3a--dark", mql.matches);
+    };
+
+    mql.addEventListener("change", applyPreference);
+    return () => {
+      mql.removeEventListener("change", applyPreference);
+    };
+  }, [uiConfig.mode]);
+
   const appLogo = useMemo(() => {
     return isDark ? uiConfig.logoDark : uiConfig.logoLight;
   }, [isDark, uiConfig.logoDark, uiConfig.logoLight]);
