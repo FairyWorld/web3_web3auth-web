@@ -23,6 +23,9 @@ export const WALLET_CONNECT_LOGO = "https://images.web3auth.io/login-wallet-conn
 export const DEFAULT_PRIMARY_COLOR = "#0364FF";
 export const DEFAULT_ON_PRIMARY_COLOR = "#FFFFFF";
 
+/** Duration of the modal open/close slide + fade animation, in milliseconds. */
+export const MODAL_ANIMATION_DURATION_MS = 500;
+
 export const DEFAULT_METAMASK_WALLET_REGISTRY_ITEM: WalletRegistryItem = {
   app: {
     android: "io.metamask",

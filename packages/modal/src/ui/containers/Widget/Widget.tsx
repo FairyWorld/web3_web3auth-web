@@ -2,7 +2,7 @@ import { WALLET_CONNECTORS, WIDGET_TYPE } from "@web3auth/no-modal";
 import { useEffect, useMemo } from "react";
 
 import Modal from "../../components/Modal";
-import { PAGES } from "../../constants";
+import { MODAL_ANIMATION_DURATION_MS, PAGES } from "../../constants";
 import { ModalStateProvider, useModalState } from "../../context/ModalStateContext";
 import { useWidget } from "../../context/WidgetContext";
 import { MODAL_STATUS } from "../../interfaces";
@@ -18,14 +18,28 @@ function WidgetContent() {
   const { widgetType } = uiConfig;
 
   const onCloseModal = () => {
+    // Hide the modal immediately to kick off the slide-down/fade-out animation.
     setModalState((prevState) => ({
       ...prevState,
-      status: MODAL_STATUS.INITIALIZED,
-      externalWalletsVisibility: false,
       modalVisibility: false,
-      currentPage: PAGES.LOGIN_OPTIONS,
     }));
     closeModal();
+
+    // Defer resetting the view-defining state until the exit animation finishes.
+    // Root reads modalState live, so resetting these fields synchronously would
+    // make the sheet snap back to the login screen while it is still animating away.
+    window.setTimeout(() => {
+      setModalState((prevState) => {
+        // The modal was reopened before the animation completed; keep the current view.
+        if (prevState.modalVisibility) return prevState;
+        return {
+          ...prevState,
+          status: MODAL_STATUS.INITIALIZED,
+          externalWalletsVisibility: false,
+          currentPage: PAGES.LOGIN_OPTIONS,
+        };
+      });
+    }, MODAL_ANIMATION_DURATION_MS);
   };
 
   const onCloseLoader = () => {

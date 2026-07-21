@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 
+import { MODAL_ANIMATION_DURATION_MS } from "../../constants";
 import { cn } from "../../utils";
 import { ModalProps } from "./Modal.type";
 
@@ -20,8 +21,6 @@ function Modal(props: ModalProps) {
     showCloseIcon = true,
     borderRadius = "large",
   } = props;
-
-  const ANIMATION_DURATION_MS = 500;
 
   const [isMounted, setIsMounted] = useState<boolean>(open);
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -51,7 +50,7 @@ function Modal(props: ModalProps) {
       // Keep the modal mounted until the slide-down/fade-out finishes.
       timer = setTimeout(() => {
         setIsMounted(false);
-      }, ANIMATION_DURATION_MS);
+      }, MODAL_ANIMATION_DURATION_MS);
     }
     return () => clearTimeout(timer);
   }, [open]);
