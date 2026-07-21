@@ -23,7 +23,8 @@
   }
 
   .w3a-parent-container > * {
-    scrollbar-color: #e5e7eb !important;
+    scrollbar-width: thin;
+    scrollbar-color: #e5e7eb transparent !important;
   }
 
   .w3a-modal-container {
@@ -33,7 +34,6 @@
   }
 
   .w3a--social-container {
-    scrollbar-color: #e5e7eb !important;
     scroll-padding-right: 10px;
   }
 
