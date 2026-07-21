@@ -45,15 +45,23 @@ function Modal(props: ModalProps) {
       }, 50);
     } else {
       setIsOpen(false);
-      // Remove overflow styling to enable scroll again.
-      document.body.style.overflow = "";
-      // Keep the modal mounted until the slide-down/fade-out finishes.
+      // Keep the modal mounted and the page scroll locked until the slide-down/fade-out
+      // finishes, otherwise the page behind the still-visible shell becomes scrollable.
       timer = setTimeout(() => {
         setIsMounted(false);
+        document.body.style.overflow = "";
       }, MODAL_ANIMATION_DURATION_MS);
     }
     return () => clearTimeout(timer);
   }, [open]);
+
+  // Safety net: if the modal unmounts mid-animation (before the close timer fires),
+  // restore the page scroll so we never leave the body locked.
+  useEffect(() => {
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, []);
 
   const positions: Record<string, string> = useMemo(
     () => ({
