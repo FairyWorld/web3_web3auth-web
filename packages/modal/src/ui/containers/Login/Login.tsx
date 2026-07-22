@@ -399,13 +399,6 @@ function Login(props: LoginProps) {
     [analytics, handleExternalWalletBtnClick, installedExternalWallets.length, totalExternalWallets]
   );
 
-  useEffect(() => {
-    if (showExternalWalletButton && !areSocialLoginsVisible && !showPasswordLessInput) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional
-      handleConnectWallet();
-    }
-  }, [showExternalWalletButton, areSocialLoginsVisible, showPasswordLessInput, handleConnectWallet]);
-
   if (showOtpFlow) {
     return (
       <LoginOtp

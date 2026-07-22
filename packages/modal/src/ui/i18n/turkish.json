@@ -25,7 +25,7 @@
     "errors-invalid-number": "Geçersiz Telefon Numarası",
     "errors-invalid-number-email": "Geçersiz E-posta veya Telefon Numarası",
     "errors-required": "Zorunlu",
-    "external.all-wallets": "Tüm cüzdanlar",
+    "external.all-wallets": "Diğer cüzdanlar",
     "external.back": "Geri",
     "external.connect": "Cüzdanla devam et",
     "external.connect-wallet": "Cüzdanı Bağla",

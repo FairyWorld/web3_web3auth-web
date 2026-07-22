@@ -25,7 +25,7 @@
     "errors-invalid-number": "የተሳሳተ የስልክ ቁጥር",
     "errors-invalid-number-email": "የተሳሳተ ኢሜይል ወይም የስልክ ቁጥር",
     "errors-required": "አስፈላጊ",
-    "external.all-wallets": "ሁሉም ዋሌቶች",
+    "external.all-wallets": "የሌላዎች ዋሌቶች",
     "external.back": "ወደ ኋላ",
     "external.connect": "በዋሌት ቀጥሉ",
     "external.connect-wallet": "ዋሌት ያገናኙ",

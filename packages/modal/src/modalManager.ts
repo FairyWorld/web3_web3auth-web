@@ -586,7 +586,7 @@ export class Web3Auth extends Web3AuthNoModal implements IWeb3AuthModal {
         // if no in app wallet is available then initialize all external wallets in modal
         await this.initExternalConnectors(
           filteredConnectors.filter((x) => x.type === CONNECTOR_CATEGORY.EXTERNAL),
-          { externalWalletsInitialized: true, showExternalWalletsOnly: true, externalWalletsVisibility: true }
+          { externalWalletsInitialized: true, showExternalWalletsOnly: true, externalWalletsVisibility: false }
         );
       }
     }

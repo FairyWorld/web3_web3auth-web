@@ -25,7 +25,7 @@
     "errors-invalid-number": "無効な電話番号",
     "errors-invalid-number-email": "無効なメールアドレスまたは電話番号",
     "errors-required": "必須",
-    "external.all-wallets": "すべてのウォレット",
+    "external.all-wallets": "他のウォレット",
     "external.back": "戻る",
     "external.connect": "ウォレットで続行",
     "external.connect-wallet": "ウォレットを接続",

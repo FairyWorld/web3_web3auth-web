@@ -15,7 +15,7 @@ import ConnectWalletQrCode from "./ConnectWalletQrCode";
 import ConnectWalletSearch from "./ConnectWalletSearch";
 
 function ConnectWallet(props: ConnectWalletProps) {
-  const { allRegistryButtons, customConnectorButtons, connectorVisibilityMap, isExternalWalletModeOnly } = props;
+  const { allRegistryButtons, customConnectorButtons, connectorVisibilityMap } = props;
 
   const { bodyState, setBodyState } = useBodyState();
   const { analytics } = useContext(AnalyticsContext);
@@ -286,10 +286,8 @@ function ConnectWallet(props: ConnectWalletProps) {
   const hideBackButton = useMemo(() => {
     // If wallet is selected, show the back button
     if (selectedWallet) return false;
-    // Otherwise, if external wallet mode only, login screen is skipped so back button is not needed
-    if (isExternalWalletModeOnly) return true;
     return false;
-  }, [selectedWallet, isExternalWalletModeOnly]);
+  }, [selectedWallet]);
 
   return (
     <div className="wta:relative wta:flex wta:flex-1 wta:flex-col wta:gap-y-4">
