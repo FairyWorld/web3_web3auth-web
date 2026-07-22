@@ -121,12 +121,16 @@ function ConnectWallet(props: ConnectWalletProps) {
     const visibilityMap = connectorVisibilityMap;
     return Object.keys(config).reduce((acc, localConnector) => {
       if (localConnector !== WALLET_CONNECTORS.WALLET_CONNECT_V2 && visibilityMap[localConnector]) {
+        const connectorConfig = config[localConnector as WALLET_CONNECTOR_TYPE];
         acc.push({
           name: localConnector,
-          displayName: config[localConnector as WALLET_CONNECTOR_TYPE].label || localConnector,
-          hasInjectedWallet: config[localConnector as WALLET_CONNECTOR_TYPE].isInjected,
+          displayName: connectorConfig.label || localConnector,
+          hasInjectedWallet: connectorConfig.isInjected,
+          isInstalled: true,
           hasWalletConnect: false,
           hasInstallLinks: false,
+          icon: connectorConfig.icon,
+          chainNamespaces: connectorConfig.chainNamespaces || [],
         });
       }
       return acc;
