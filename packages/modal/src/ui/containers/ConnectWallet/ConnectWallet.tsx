@@ -143,13 +143,19 @@ function ConnectWallet(props: ConnectWalletProps) {
   };
 
   const filteredButtons = useMemo(() => {
+    const matchesSearch = (button: ExternalButton) => {
+      if (!walletSearch) return true;
+      const searchLower = walletSearch.toLowerCase();
+      return button.name.toLowerCase().includes(searchLower) || button.displayName?.toLowerCase().includes(searchLower);
+    };
+
     if (walletDiscoverySupported) {
       return [...allUniqueButtons.filter((button) => button.hasInjectedWallet), ...allUniqueButtons.filter((button) => !button.hasInjectedWallet)]
         .sort((a, _) => (a.name === WALLET_CONNECTORS.METAMASK ? -1 : 1))
         .filter((button) => selectedChain === "all" || button.chainNamespaces.includes(selectedChain as ChainNamespaceType))
-        .filter((button) => button.name.toLowerCase().includes(walletSearch.toLowerCase()));
+        .filter(matchesSearch);
     }
-    return installedWalletButtons;
+    return installedWalletButtons.filter(matchesSearch);
   }, [walletDiscoverySupported, installedWalletButtons, walletSearch, allUniqueButtons, selectedChain]);
 
   const externalButtons = useMemo(() => {
